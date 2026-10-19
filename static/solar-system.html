@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0e12" />
+    <meta name="description" content="查看太阳系行星的位置与长期运行轨迹。" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png?v=star-trails-20261017" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg?v=star-trails-20261017" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=star-trails-20261017" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152.png?v=star-trails-20261017" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon-167.png?v=star-trails-20261017" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="星屿" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="stylesheet" href="/solar-system.css?v=0.33" />
+    <link rel="stylesheet" href="/topbar.css?v=0.9" />
+    <title>太阳系 · 星屿</title>
+  </head>
+  <body>
+    <div class="solar-app">
+      <header class="topbar page-header">
+        <a class="brand" href="/" aria-label="星屿 · StarIsle">
+          <img class="brand-mark" src="/icon.svg?v=star-trails-20261017" width="27" height="27" alt="" />
+          <span class="brand-copy"><strong>星屿</strong><small>StarIsle</small></span>
+        </a>
+        <nav class="page-nav" aria-label="页面导航">
+          <a href="/">星图</a>
+          <a class="active" href="/solar-system">太阳系</a>
+          <a href="/moon-calendar">月相</a>
+        </nav>
+        <div class="topbar-context solar-context">
+          <section class="solar-toolbar" aria-label="太阳系显示设置">
+            <div class="toolbar-group">
+              <div id="rangeButtons" class="segmented" role="group" aria-label="轨迹时长">
+                <button class="active" data-years="1" aria-pressed="true">1 年</button>
+                <button data-years="5" aria-pressed="false">5 年</button>
+                <button data-years="20" aria-pressed="false">20 年</button>
+              </div>
+            </div>
+            <label class="date-control">
+              <input id="anchorDate" type="datetime-local" min="1550-01-01T00:00" max="2650-01-25T23:59" aria-label="焦点日期" />
+            </label>
+            <button id="todayBtn" class="quiet-button" aria-label="回到现在">现在</button>
+          </section>
+        </div>
+      </header>
+
+      <main>
+        <div class="solar-layout">
+          <section class="orbit-panel">
+            <div class="orbit-controls orbit-controls-overlay">
+              <div id="frameButtons" class="view-switch" role="group" aria-label="轨迹图坐标中心">
+                <button class="active toggle-state-button" data-frame="sun"><span>日心</span></button>
+              </div>
+              <div id="scaleButtons" class="view-switch" role="group" aria-label="太阳系范围">
+                <button class="active toggle-state-button" data-view="full"><span>全太阳系</span></button>
+              </div>
+              <details class="layer-menu">
+                <summary>图层</summary>
+                <div class="minor-toolbar" aria-label="小天体显示图层">
+                  <div id="minorLayerButtons" class="layer-buttons" role="group" aria-label="小天体显示图层">
+                    <button class="active" data-layer="bright_asteroid" aria-pressed="true"><i></i>主带 / 亮小行星</button>
+                    <button class="active" data-layer="neo" aria-pressed="true"><i></i>近地小行星</button>
+                    <button class="active" data-layer="comet" aria-pressed="true"><i></i>彗星</button>
+                    <button data-layer="meteor" aria-pressed="false"><i></i>流星群</button>
+                    <button class="active" data-layer="kbo" aria-pressed="true"><i></i>柯伊伯带</button>
+                    <button class="active" data-layer="tno" aria-pressed="true"><i></i>海王星外</button>
+                  </div>
+                </div>
+              </details>
+            </div>
+            <div class="orbit-stage">
+              <canvas id="orbitCanvas" aria-label="太阳系行星位置图，可点选行星"></canvas>
+              <div id="orbitLoading" class="orbit-loading"><span class="spinner"></span>正在计算行星位置…</div>
+            </div>
+            <div class="timeline">
+              <div class="timeline-topline">
+                <span id="timelineStart">过去</span>
+                <strong><span id="cursorDate">—</span></strong>
+                <span id="timelineEnd">未来</span>
+              </div>
+              <input id="timeSlider" type="range" min="0" max="100" step="0.01" value="100" aria-label="太阳系时间轴" />
+              <div class="timeline-controls">
+                <button id="playBtn" class="play-button" aria-label="播放行星运行">▶ <span>播放</span></button>
+                <label class="speed-control"><span>速度</span>
+                  <select id="speedSelect" aria-label="播放速度">
+                    <option value="1">1 天 / 秒</option>
+                    <option value="7" selected>7 天 / 秒</option>
+                    <option value="30">30 天 / 秒</option>
+                  </select>
+                </label>
+                <span id="sampleNote" class="sample-note">每日采样</span>
+              </div>
+            </div>
+          </section>
+
+          <aside class="planet-panel">
+            <div id="selectedPlanet" class="selected-planet">
+              <div class="selected-planet-title"><span id="selectedColor" class="planet-dot"></span><div><small>当前选择</small><h3 id="selectedName">地球</h3></div></div>
+              <div class="distance-pair">
+                <div class="distance-reading"><strong id="selectedDistance">—</strong><span>AU <small>距太阳</small></span></div>
+                <div class="distance-reading earth-distance"><strong id="selectedEarthDistance">—</strong><span>AU <small>距地球</small></span></div>
+              </div>
+              <div class="coordinate-reading"><span>X <b id="selectedX">—</b></span><span>Y <b id="selectedY">—</b></span><span>Z <b id="selectedZ">—</b></span></div>
+            </div>
+            <div id="planetList" class="planet-list" aria-label="行星位置列表"></div>
+            <section class="small-body-section" aria-label="小天体位置">
+              <div class="satellite-heading">
+                <div><h3>代表性小天体</h3><p>JPL SBDB 轨道根数近似</p></div>
+                <span id="smallBodyCount">—</span>
+              </div>
+              <div id="smallBodyList" class="small-body-list"></div>
+            </section>
+            <section class="satellite-section" aria-label="主要卫星位置">
+              <div class="satellite-heading">
+                <div><h3>主要卫星</h3><p id="satelliteCaption">选择行星查看其卫星</p></div>
+                <span id="satelliteStatus" role="status">载入中</span>
+              </div>
+              <canvas id="satelliteCanvas" aria-label="所选行星卫星位置示意图"></canvas>
+              <div id="satelliteList" class="satellite-list"></div>
+            </section>
+            <p class="frame-note">坐标为日心 J2000 黄道坐标。卫星图独立放大，轨道半径按比例显示。</p>
+          </aside>
+        </div>
+
+        <footer class="solar-footer site-footer">
+          <p class="site-footer-note">小天体按 osculating 轨道根数作二体近似，带状粒子仅表示分布范围。</p>
+          <div class="site-footer-meta">
+            <span class="site-footer-item"><b>数据</b>JPL DE440 · 卫星星历 · JPL SBDB</span>
+            <span class="site-footer-item"><b>范围</b>DE440 1550—2650 年</span>
+            <a class="site-footer-link" href="/">星图首页</a>
+          </div>
+        <span class="site-footer-item"><a href="/licenses" target="_blank" rel="noopener">数据来源与许可</a></span>
+</footer>
+      </main>
+    </div>
+    <script src="/solar-system.js?v=0.35" defer></script>
+  </body>
+</html>

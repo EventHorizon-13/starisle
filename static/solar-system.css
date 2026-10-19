@@ -1,0 +1,366 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b0e12;
+  --panel: #11151a;
+  --panel-raised: #151a20;
+  --line: #242a31;
+  --text: #f2f4f7;
+  --muted: #929aa5;
+  --dim: #68717d;
+  --blue: #7ea6ee;
+  --blue-soft: #a9c3f5;
+  --font: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html { min-width: 320px; background: var(--bg); }
+body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font); }
+button, input, select { font: inherit; color: inherit; }
+button, input, select { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.solar-app { max-width: 1600px; margin: 0 auto; padding: 0 32px 34px; }
+.topbar { height: 52px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #20252c; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; }
+.brand > span:last-child { display: grid; gap: 0; }
+.brand strong { font-size: 15px; font-weight: 650; letter-spacing: .08em; }
+.brand small { color: #69727e; font-size: 9px; letter-spacing: .12em; }
+.brand-mark { position: relative; display: grid; place-items: center; width: 27px; height: 27px; border-radius: 8px; background: var(--blue); }
+.brand-mark::before { width: 7px; height: 7px; border-radius: 50%; background: var(--bg); content: ''; }
+.brand-mark i { display: none; }
+.page-nav { display: flex; align-self: stretch; gap: 22px; }
+.page-nav a { position: relative; display: inline-flex; align-items: center; color: #7f8791; font-size: 11px; text-decoration: none; }
+.page-nav a:hover, .page-nav a.active { color: #e9edf3; }
+.page-nav a.active::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--blue); content: ''; }
+main { padding-top: 30px; }
+h2, h3, p { margin-top: 0; }
+.solar-controls-row { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin-bottom: 14px; }
+.date-control { display: inline-flex; align-items: center; min-width: 0; }
+.date-control input { width: 205px; height: 32px; padding: 0 9px; border: 1px solid #2a3038; border-radius: 7px; background: #11151a; color: #dce2ea; font: 11px var(--mono); color-scheme: dark; }
+.solar-toolbar { display: flex; flex: 0 1 490px; flex-wrap: wrap; align-items: center; gap: 8px; min-width: min(100%, 420px); min-height: 46px; margin: 0; padding: 6px 9px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.toolbar-group { display: flex; align-items: center; gap: 10px; }
+.segmented { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid #292f37; border-radius: 7px; background: #0d1116; }
+.segmented button, .view-switch button { min-height: 27px; padding: 0 11px; border: 0; border-radius: 5px; background: transparent; color: #8993a0; font-size: 11px; cursor: pointer; }
+.segmented button:hover, .view-switch button:hover { color: #d5dbe5; }
+.segmented button.active, .view-switch button.active { background: #25334a; color: #c8d9f7; }
+.quiet-button { padding: 7px 11px; border: 1px solid #2b323b; border-radius: 7px; background: #171c22; color: #c9d2df; font-size: 10px; cursor: pointer; }
+.quiet-button:hover { border-color: #465164; background: #1c222a; }
+.minor-toolbar { display: flex; flex: 1 1 350px; align-items: center; min-width: min(100%, 320px); margin: 0; padding: 6px 8px; border: 1px solid var(--line); border-radius: 10px; background: #0f1318; }
+.layer-buttons { display: flex; flex: 1; flex-wrap: wrap; gap: 5px; }
+.layer-buttons button { display: inline-flex; align-items: center; gap: 6px; min-height: 27px; padding: 0 9px; border: 1px solid #2a313a; border-radius: 6px; background: #11161c; color: #7e8996; font-size: 9px; cursor: pointer; }
+.layer-buttons button:hover { border-color: #3d4856; color: #cad2dc; }
+.layer-buttons button.active { border-color: #3b4c63; background: #192332; color: #d3dce9; }
+.layer-buttons i { width: 5px; height: 5px; border-radius: 50%; background: #788391; opacity: .38; }
+.layer-buttons button.active i { opacity: 1; box-shadow: 0 0 6px currentColor; }
+.layer-buttons [data-layer="bright_asteroid"] i { background: #d4aa63; }
+.layer-buttons [data-layer="neo"] i { background: #ef7f72; }
+.layer-buttons [data-layer="comet"] i { background: #73c8ce; }
+.layer-buttons [data-layer="meteor"] i { background: #c495ef; }
+.layer-buttons [data-layer="kbo"] i { background: #77a9df; }
+.layer-buttons [data-layer="tno"] i { background: #a48bd5; }
+.solar-layout { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(290px, .72fr); gap: 14px; align-items: start; }
+.orbit-panel, .planet-panel { min-width: 0; border: 1px solid #252b33; border-radius: 11px; background: #101419; }
+.orbit-panel { padding: 16px 18px 12px; }
+.orbit-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.orbit-heading h2, .planet-panel-heading h2 { margin: 0; font-size: 14px; font-weight: 580; }
+.orbit-heading p, .planet-panel-heading p { margin: 4px 0 0; color: #737d89; font-size: 10px; }
+.view-switch { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid #292f37; border-radius: 7px; background: #0d1116; }
+.view-switch button { min-height: 26px; padding: 0 9px; font-size: 10px; }
+.view-switch button { white-space: nowrap; }
+.orbit-controls { display: flex; align-items: center; gap: 8px; }
+.zoom-controls { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid #292f37; border-radius: 7px; background: #0d1116; }
+.zoom-controls span { min-width: 36px; padding: 0 4px; color: #8490a0; font: 10px var(--mono); text-align: center; }
+.zoom-controls button { min-width: 27px; height: 25px; padding: 0 7px; border: 0; border-radius: 5px; background: transparent; color: #aab6c6; font-size: 11px; cursor: pointer; }
+.zoom-controls button:hover { background: #192230; color: #d7e3f8; }
+.orbit-stage { position: relative; width: min(100%, 800px); margin: 8px auto 0; aspect-ratio: 1; overflow: hidden; border-radius: 8px; background: #0b0f13; }
+#orbitCanvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+#orbitCanvas.is-dragging { cursor: grabbing; }
+.orbit-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 9px; background: rgba(11, 15, 19, .9); color: #929ba7; font-size: 11px; }
+.orbit-loading[hidden] { display: none; }
+.spinner { width: 14px; height: 14px; border: 1px solid #303843; border-top-color: var(--blue); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.timeline { padding: 10px 8px 8px; border-top: 1px solid #222830; }
+.timeline-topline { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; color: #717b87; font: 10px var(--mono); }
+.timeline-topline strong { display: grid; justify-items: center; gap: 3px; color: #dce2e9; font-weight: 500; }
+.timeline-topline strong small { color: #748198; font: 9px var(--font); }
+.timeline-topline span:last-child { text-align: right; }
+#timeSlider { display: block; width: 100%; height: 22px; margin: 5px 0 2px; accent-color: var(--blue); cursor: pointer; }
+.timeline-controls { display: flex; align-items: center; gap: 15px; }
+.play-button { display: inline-flex; align-items: center; gap: 7px; min-width: 78px; padding: 6px 10px; border: 1px solid #385074; border-radius: 7px; background: #182236; color: #bdd0f0; font-size: 10px; cursor: pointer; }
+.play-button:hover { border-color: #5b78a9; }
+.speed-control { display: inline-flex; align-items: center; gap: 7px; color: #77818e; font-size: 10px; }
+.speed-control select { border: 0; background: transparent; color: #bbc4d0; font-size: 10px; color-scheme: dark; }
+.sample-note { margin-left: auto; color: #67717e; font-size: 10px; }
+.planet-panel { padding: 15px 14px 11px; }
+.planet-panel-heading { display: flex; align-items: center; justify-content: space-between; padding: 1px 2px 12px; border-bottom: 1px solid #222830; }
+.body-count { display: grid; place-items: center; min-width: 25px; height: 22px; border: 1px solid #303844; border-radius: 6px; color: #aebbd0; font: 10px var(--mono); }
+.selected-planet { margin: 0 0 8px; padding: 13px; border: 1px solid #2b3441; border-radius: 9px; background: #141a21; }
+.selected-planet-title { display: flex; align-items: center; gap: 9px; }
+.selected-planet-title > div { display: grid; gap: 1px; }
+.selected-planet-title small { color: #747f8c; font-size: 9px; }
+.selected-planet-title h3 { margin: 0; font-size: 15px; font-weight: 580; }
+.planet-dot { display: inline-block; width: 9px; height: 9px; flex: none; border-radius: 50%; background: #79a8f5; }
+.distance-reading { display: flex; align-items: baseline; gap: 7px; margin-top: 13px; }
+.distance-reading strong { color: #f0f2f5; font: 26px var(--mono); letter-spacing: -.05em; }
+.distance-reading > span { color: #a8b3c2; font: 11px var(--mono); }
+.distance-reading small { margin-left: 3px; color: #75808c; font: 9px var(--font); }
+.distance-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.distance-pair .distance-reading { min-width: 0; gap: 5px; }
+.distance-pair .distance-reading strong { font-size: 21px; }
+.distance-pair .earth-distance strong { color: #b7c9e9; }
+.coordinate-reading { display: flex; gap: 12px; margin-top: 7px; color: #6f7a87; font: 9px var(--mono); }
+.coordinate-reading b { color: #aeb8c5; font-weight: 450; }
+.planet-list { display: grid; gap: 1px; max-height: min(58vh, 530px); overflow: auto; padding: 2px 2px 0; scrollbar-color: #353d47 transparent; scrollbar-width: thin; }
+.planet-row { display: grid; grid-template-columns: 16px minmax(0, 1fr) minmax(80px, auto); align-items: center; gap: 7px; min-height: 42px; padding: 5px 6px; border: 1px solid transparent; border-radius: 7px; background: transparent; text-align: left; cursor: pointer; }
+.planet-row:hover { background: #171d24; }
+.planet-row.active { border-color: #2d3a4d; background: #192230; }
+.planet-row .planet-dot { width: 7px; height: 7px; }
+.planet-row-name { color: #d9dee5; font-size: 11px; }
+.planet-row-kind { display: block; margin-top: 2px; color: #68727f; font-size: 9px; }
+.planet-row-distance { display: grid; gap: 3px; color: #9ba9bb; font: 9px var(--mono); text-align: right; white-space: nowrap; }
+.planet-row-distance small { color: #778495; font: 8px var(--font); }
+.satellite-section { margin-top: 10px; padding: 11px 9px 7px; border: 1px solid #252d37; border-radius: 9px; background: #0e1217; }
+.small-body-section { margin-top: 10px; padding: 11px 9px 7px; border: 1px solid #252d37; border-radius: 9px; background: #0e1217; }
+.small-body-list { display: grid; gap: 1px; max-height: 260px; margin-top: 7px; overflow: auto; scrollbar-color: #353d47 transparent; scrollbar-width: thin; }
+.small-body-row { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; align-items: center; gap: 7px; min-height: 34px; padding: 4px 5px; border: 1px solid transparent; border-radius: 6px; background: transparent; text-align: left; cursor: pointer; }
+.small-body-row:hover { background: #161d25; }
+.small-body-row.active { border-color: #33425a; background: #192230; }
+.small-body-dot { width: 6px; height: 6px; border-radius: 50%; }
+.small-body-name { color: #d4dae3; font-size: 9px; }
+.small-body-kind { display: block; overflow: hidden; margin-top: 2px; color: #75808d; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.small-body-distance { color: #9ba9bb; font: 8px var(--mono); white-space: nowrap; }
+.satellite-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.satellite-heading h3 { margin: 0; font-size: 11px; font-weight: 560; }
+.satellite-heading p { margin: 3px 0 0; color: #707b88; font-size: 9px; }
+.satellite-heading > span { color: #768397; font-size: 8px; white-space: nowrap; }
+#satelliteCanvas { display: block; width: 100%; height: 94px; margin-top: 5px; border-radius: 6px; background: #0b0f13; }
+.satellite-list { display: grid; max-height: 190px; overflow: auto; padding-top: 4px; scrollbar-color: #353d47 transparent; scrollbar-width: thin; }
+.satellite-row { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; align-items: center; gap: 7px; min-height: 32px; padding: 4px 5px; border: 1px solid transparent; border-radius: 6px; background: transparent; text-align: left; cursor: pointer; }
+.satellite-row:hover { background: #161d25; }
+.satellite-row.active { border-color: #33425a; background: #192230; }
+.satellite-row .satellite-dot { width: 6px; height: 6px; border-radius: 50%; }
+.satellite-row-name { color: #d4dae3; font-size: 9px; }
+.satellite-row-info { display: block; margin-top: 2px; color: #75808d; font-size: 8px; }
+.satellite-row-distance { color: #9ba9bb; font: 8px var(--mono); white-space: nowrap; }
+.satellite-empty { padding: 8px 3px; color: #727d89; font-size: 9px; line-height: 1.6; }
+.frame-note { margin: 9px 3px 0; color: #626d79; font-size: 9px; line-height: 1.6; }
+.solar-footer { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 15px; color: #626d79; font-size: 9px; }
+.solar-footer a { margin-left: auto; color: #90a7cc; text-decoration: none; }
+.solar-footer a:hover { color: #c2d4f3; }
+
+@media (max-width: 900px) {
+  .solar-app { padding-right: 20px; padding-left: 20px; }
+  .solar-layout { grid-template-columns: minmax(0, 1.3fr) minmax(260px, .8fr); gap: 10px; }
+  .orbit-panel { padding: 13px 14px 10px; }
+  .orbit-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .orbit-controls { width: 100%; flex-wrap: wrap; justify-content: space-between; }
+}
+@media (max-width: 700px) {
+  .solar-app { padding: 0 12px calc(24px + env(safe-area-inset-bottom)); }
+  .topbar { height: 48px; justify-content: flex-start; gap: 20px; }
+  .page-nav { gap: 12px; }
+  main { padding-top: 21px; }
+  .solar-controls-row { flex-direction: column; gap: 7px; margin-bottom: 10px; }
+  .solar-toolbar { flex: none; gap: 8px; min-width: 0; width: 100%; min-height: 0; margin: 0; padding: 8px; }
+  .date-control { flex: 1; min-width: 120px; }
+  .date-control input { width: 100%; min-width: 0; }
+  .minor-toolbar { flex: none; align-items: flex-start; flex-direction: column; min-width: 0; width: 100%; gap: 7px; margin: 0; padding: 9px; }
+  .layer-buttons { width: 100%; }
+  .layer-buttons button { flex: 1 1 auto; justify-content: center; }
+  .toolbar-group { gap: 7px; }
+  .segmented button { padding: 0 9px; }
+  .quiet-button { margin-left: auto; }
+  .solar-layout { display: flex; flex-direction: column; }
+  .orbit-panel, .planet-panel { width: 100%; }
+  .orbit-panel { padding: 11px 10px 9px; }
+  .orbit-heading { align-items: flex-start; flex-direction: column; gap: 10px; padding: 0 2px; }
+  .orbit-controls { width: 100%; flex-wrap: wrap; justify-content: space-between; }
+  .orbit-stage { width: 100%; margin-top: 8px; }
+  .timeline { padding-right: 4px; padding-left: 4px; }
+  .timeline-controls { gap: 12px; }
+  .sample-note { font-size: 9px; }
+  .planet-panel { padding: 12px 11px 10px; }
+  .planet-list { max-height: 370px; }
+  .distance-pair { gap: 5px; }
+  .distance-pair .distance-reading strong { font-size: 19px; }
+  .solar-footer { flex-direction: column; gap: 6px; padding: 0 2px; }
+  .solar-footer a { margin-left: 0; }
+}
+@media (max-width: 420px) {
+  .topbar { gap: 12px; }
+  .brand > span:last-child { display: none; }
+}
+@media (max-width: 390px) {
+  .solar-app { padding-right: 11px; padding-left: 11px; }
+  .brand strong { font-size: 15px; }
+  .brand-mark { transform: scale(.9); }
+  .topbar { gap: 20px; }
+  .page-nav { gap: 16px; }
+  .timeline-topline { font-size: 9px; }
+  .coordinate-reading { gap: 8px; font-size: 8px; }
+}
+
+/* 桌面端将轨道工作区收进当前视口；轨道内容按等比例映射，保持圆形。 */
+@media (min-width: 901px) {
+  body { overflow: hidden; }
+  .solar-app { height: 100vh; height: 100dvh; padding-bottom: 12px; }
+  main {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 9px;
+    height: calc(100vh - 52px);
+    height: calc(100dvh - 52px);
+    min-height: 0;
+    padding-top: 12px;
+  }
+  .solar-controls-row { margin-bottom: 0; }
+  .solar-layout { height: 100%; min-height: 0; align-items: stretch; }
+  .orbit-panel, .planet-panel { height: 100%; min-height: 0; }
+  .orbit-panel {
+    position: relative;
+    display: block;
+    padding: 12px 15px 9px;
+    overflow: hidden;
+  }
+  .orbit-heading { position: relative; z-index: 1; }
+  .orbit-stage {
+    position: absolute;
+    inset: 56px 15px 118px;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    aspect-ratio: auto;
+  }
+  .timeline { position: absolute; right: 15px; bottom: 7px; left: 15px; z-index: 1; padding-top: 7px; padding-bottom: 5px; background: rgba(16, 20, 25, .94); }
+  .planet-panel { overflow-y: auto; scrollbar-color: #353d47 transparent; scrollbar-width: thin; }
+  .planet-list { max-height: 210px; }
+  .small-body-list { max-height: 180px; }
+  .satellite-list { max-height: 140px; }
+  .solar-footer { margin-top: 0; }
+}
+
+/* v0.30 · 轨道视图铺满卡片，工具与时间轴使用模糊覆盖层 */
+.orbit-panel {
+  position: relative;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  background: #0b0f13;
+}
+.orbit-panel .orbit-stage {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border-radius: inherit;
+  aspect-ratio: 1;
+}
+.orbit-controls-overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 8;
+  display: flex;
+  width: auto;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 5px;
+  padding: 4px;
+  border: 1px solid rgba(94, 108, 126, .34);
+  border-radius: 9px;
+  background: rgba(13, 17, 22, .58);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+  backdrop-filter: blur(14px) saturate(125%);
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
+}
+.orbit-controls-overlay .view-switch { flex: none; background: rgba(13, 17, 22, .52); }
+.orbit-controls-overlay #frameButtons button { width: 46px; }
+.orbit-controls-overlay #scaleButtons button { width: 72px; }
+.toggle-state-button span { display: block; }
+.layer-menu { position: relative; flex: none; }
+.layer-menu summary {
+  display: inline-flex;
+  height: 32px;
+  align-items: center;
+  padding: 0 9px;
+  border: 1px solid #292f37;
+  border-radius: 7px;
+  background: rgba(13, 17, 22, .58);
+  color: #aab6c6;
+  font-size: 10px;
+  cursor: pointer;
+  list-style: none;
+  white-space: nowrap;
+}
+.layer-menu summary::-webkit-details-marker { display: none; }
+.layer-menu[open] summary { border-color: #526f9f; color: #c7d8f6; }
+.layer-menu .minor-toolbar {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 12;
+  display: block;
+  width: min(340px, calc(100vw - 36px));
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid rgba(94, 108, 126, .4);
+  border-radius: 9px;
+  background: rgba(14, 18, 24, .82);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .38);
+  backdrop-filter: blur(16px) saturate(125%);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+}
+.layer-menu .layer-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+.layer-menu .layer-buttons button { justify-content: flex-start; }
+.orbit-panel .timeline {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 7;
+  margin: 0;
+  padding: 8px 10px 7px;
+  border: 1px solid rgba(77, 90, 106, .38);
+  border-radius: 9px;
+  background: rgba(10, 14, 18, .58);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+@media (min-width: 901px) {
+  main { grid-template-rows: minmax(0, 1fr) auto; }
+  .orbit-panel .orbit-stage {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    aspect-ratio: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .orbit-panel .orbit-stage {
+    height: clamp(500px, 74svh, 680px);
+    min-height: 500px;
+    aspect-ratio: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .orbit-controls-overlay { top: 9px; right: 9px; left: auto; width: auto; justify-content: flex-end; }
+  .orbit-controls-overlay .view-switch button { padding-right: 7px; padding-left: 7px; }
+  .layer-menu summary { padding-right: 7px; padding-left: 7px; }
+  .orbit-panel .timeline { right: 9px; bottom: 9px; left: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle-state-button span { animation: none; }
+}

@@ -1,0 +1,18 @@
+services:
+  starisle:
+    image: ${STARISLE_IMAGE:-starisle:0.6.0}
+    build:
+      context: .
+      args:
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-https://pypi.org/simple}
+    restart: unless-stopped
+    environment:
+      DATA_DIR: /data
+      STAR_LIMIT: "6.2"
+      DEEP_STAR_LIMIT: "10.0"
+      OFFLINE: ${OFFLINE:-false}
+      IERS_UPDATE: ${IERS_UPDATE:-false}
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${PORT:-18080}:8000"
+    volumes:
+      - ./data:/data

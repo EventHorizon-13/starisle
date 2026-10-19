@@ -1,0 +1,31 @@
+{
+  "name": "星屿 · StarIsle",
+  "short_name": "星屿",
+  "description": "按地点和时间查看天体方位、星空和升落时刻。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b0e12",
+  "theme_color": "#0b0e12",
+  "icons": [
+    {
+      "src": "/icon-192.png?v=star-trails-20261017",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png?v=star-trails-20261017",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg?v=star-trails-20261017",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

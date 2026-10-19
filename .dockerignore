@@ -1,0 +1,13 @@
+data/
+.env
+.env.*
+__pycache__/
+*.py[cod]
+.git/
+.github/
+.venv/
+node_modules/
+test-results/
+playwright-report/
+*.tar*
+.DS_Store

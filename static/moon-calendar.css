@@ -1,0 +1,194 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b0e12; --panel: #11151a; --raised: #151a20; --line: #242a31;
+  --text: #f2f4f7; --muted: #929aa5; --dim: #68717d; --blue: #7ea6ee; --blue-soft: #a9c3f5;
+  --font: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { min-width: 320px; background: var(--bg); }
+body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font); }
+button, input { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.moon-app { max-width: 1240px; margin: 0 auto; padding: 0 32px 36px; }
+.topbar { height: 52px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #20252c; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; }
+.brand > span:last-child { display: grid; }
+.brand strong { font-size: 15px; font-weight: 650; letter-spacing: .08em; }
+.brand small { color: #69727e; font-size: 9px; letter-spacing: .12em; }
+.brand-mark { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 8px; background: var(--blue); }
+.brand-mark::before { width: 7px; height: 7px; border-radius: 50%; background: var(--bg); content: ''; }
+.brand-mark i { display: none; }
+.page-nav { display: flex; align-self: stretch; gap: 22px; }
+.page-nav a { position: relative; display: inline-flex; align-items: center; color: #7f8791; font-size: 11px; text-decoration: none; }
+.page-nav a:hover, .page-nav a.active { color: #e9edf3; }
+.page-nav a.active::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--blue); content: ''; }
+main { padding-top: 20px; }
+.month-controls { display: flex; align-items: center; gap: 6px; }
+.month-controls > button { height: 32px; min-width: 32px; border: 1px solid #2b323b; border-radius: 7px; background: #171c22; color: #c9d2df; cursor: pointer; }
+.month-controls > button:hover { border-color: #465164; background: #1c222a; }
+.month-controls label { display: flex; align-items: center; gap: 7px; color: #7c8794; font-size: 10px; }
+.month-controls input { width: 126px; height: 32px; min-width: 0; padding: 0 9px; border: 1px solid #2a3038; border-radius: 7px; background: #11151a; color: #dce2ea; font: 11px var(--mono); color-scheme: dark; }
+.month-controls .this-month { width: auto; padding: 0 10px; font-size: 10px; white-space: nowrap; }
+.panel { min-width: 0; border: 1px solid #252b33; border-radius: 11px; background: #101419; }
+.moon-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(270px, .7fr); gap: 14px; }
+.moon-card { padding: 17px 18px 15px; }
+.moon-card-toolbar { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+.card-heading, .panel-heading, .calendar-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.card-heading #selectedWeekday { display: block; margin-top: 4px; color: #778391; font-size: 10px; }
+.card-heading h2, .panel-heading h2, .calendar-heading h2 { margin: 0; font-size: 15px; font-weight: 580; }
+.phase-tag { padding: 5px 8px; border: 1px solid #34445d; border-radius: 99px; background: #182234; color: #abc3ea; font-size: 10px; }
+.moon-card-body { display: flex; align-items: center; justify-content: center; gap: clamp(28px, 7vw, 90px); min-height: 225px; padding: 14px 0 8px; }
+.large-moon { display: grid; place-items: center; width: 196px; height: 196px; flex: none; filter: drop-shadow(0 0 28px rgba(213, 220, 229, .16)); transform-origin: center; will-change: transform, opacity, filter; }
+.large-moon svg { display: block; width: 100%; height: 100%; }
+.moon-disc { overflow: visible; isolation: isolate; }
+.moon-texture { pointer-events: none; }
+.moon-texture-light { opacity: .94; }
+.moon-texture-night { opacity: 1; }
+.large-moon .moon-disc { transform: translateZ(0); backface-visibility: hidden; }
+.moon-summary { display: grid; grid-template-rows: 16px 52px minmax(44px, auto); align-content: center; width: min(260px, 42vw); max-width: 260px; min-height: 124px; }
+.moon-summary small { color: #737e8c; font-size: 10px; letter-spacing: .08em; }
+.moon-summary strong { display: flex; align-items: center; color: #eef1f5; font-size: clamp(25px, 3vw, 34px); font-weight: 560; line-height: 1.08; letter-spacing: -.04em; }
+.moon-summary p { align-self: start; min-height: 44px; margin: 4px 0 0; color: #87919d; font-size: 11px; line-height: 1.65; }
+.moon-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.moon-metrics > div { display: grid; gap: 5px; padding: 11px 12px; border: 1px solid #252c34; border-radius: 8px; background: #0d1116; }
+.moon-metrics small { color: #707a86; font-size: 9px; }
+.moon-metrics strong { color: #dfe5ed; font: 14px var(--mono); font-weight: 500; }
+.day-slider-wrap { margin-top: 11px; padding: 9px 10px 5px; border-top: 1px solid #222830; }
+.slider-labels { display: grid; grid-template-columns: 1fr auto 1fr; color: #697481; font: 9px var(--mono); }
+.slider-labels strong { color: #b9cce9; font-weight: 500; }
+.slider-labels span:last-child { text-align: right; }
+#daySlider { display: block; width: 100%; height: 22px; margin: 3px 0 0; accent-color: var(--blue); cursor: pointer; }
+.events-panel { padding: 16px 15px; }
+.panel-heading p, .calendar-heading p { margin: 4px 0 0; color: #737d89; font-size: 10px; }
+#loadStatus { color: #778390; font-size: 9px; }
+.event-list { display: grid; gap: 6px; margin-top: 14px; }
+.phase-event { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 10px; padding: 9px; border: 1px solid #252d37; border-radius: 8px; background: #0e1217; }
+.event-moon { width: 32px; height: 32px; }
+.event-moon svg { width: 100%; height: 100%; }
+.phase-event > div:last-child { min-width: 0; }
+.phase-event strong { display: block; color: #dce2e9; font-size: 11px; font-weight: 550; }
+.phase-event span { display: block; margin-top: 3px; color: #7f8c9d; font: 9px var(--mono); }
+.events-note { margin: 12px 2px 0; color: #68727f; font-size: 9px; line-height: 1.6; }
+.calendar-panel { margin-top: 14px; padding: 16px 18px 18px; }
+.calendar-panel + .events-panel { margin-top: 14px; }
+.calendar-legend { display: inline-flex; align-items: center; gap: 6px; color: #788491; font-size: 9px; }
+.calendar-legend i { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+.weekday-row, .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.weekday-row { margin-top: 14px; color: #68727e; font-size: 9px; text-align: center; }
+.calendar-grid { margin-top: 7px; }
+.calendar-empty { min-height: 104px; }
+.day-cell { position: relative; min-height: 104px; padding: 8px; border: 1px solid #222932; border-radius: 8px; background: #0d1116; cursor: pointer; text-align: left; transition: border-color .15s, background .15s; }
+.day-cell:hover { border-color: #39475b; background: #121820; }
+.day-cell.selected { border-color: #536f9f; background: #151f2e; }
+.day-cell.today::after { position: absolute; top: 8px; right: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--blue); content: ''; }
+.day-number { color: #aeb7c3; font: 10px var(--mono); }
+.day-moon { width: 43px; height: 43px; margin: 2px auto 1px; }
+.day-moon svg { width: 100%; height: 100%; }
+.day-info { display: flex; justify-content: space-between; gap: 4px; color: #727d89; font-size: 8px; }
+.day-info span:last-child { font-family: var(--mono); }
+.day-event { display: block; overflow: hidden; margin-top: 4px; color: #9eb8df; font-size: 8px; white-space: nowrap; text-overflow: ellipsis; }
+.moon-footer { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 15px; color: #626d79; font-size: 9px; }
+.toast { position: fixed; bottom: max(20px, env(safe-area-inset-bottom)); left: 50%; z-index: 30; max-width: calc(100vw - 32px); padding: 9px 13px; border: 1px solid #343c47; border-radius: 8px; background: #181e25; color: #dce2e9; font-size: 11px; opacity: 0; pointer-events: none; transform: translate(-50%, 15px); transition: .2s; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 900px) {
+  .moon-app { padding-right: 18px; padding-left: 18px; }
+  .moon-layout { grid-template-columns: 1fr; }
+  .event-list { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .moon-app { padding: 0 12px calc(24px + env(safe-area-inset-bottom)); }
+  .topbar { height: 48px; justify-content: flex-start; gap: 14px; }
+  .page-nav { gap: 12px; }
+  main { padding-top: 14px; }
+  .moon-card-toolbar { margin-bottom: 9px; }
+  .month-controls { width: 100%; gap: 5px; }
+  .month-controls label { min-width: 0; flex: 1; }
+  .month-controls input { width: 100%; }
+  .moon-card { padding: 14px 12px 12px; }
+  .moon-card-body { gap: 22px; min-height: 190px; }
+  .large-moon { width: 126px; height: 126px; }
+  .moon-summary strong { font-size: 24px; }
+  .calendar-panel { padding: 14px 9px 12px; }
+  .weekday-row, .calendar-grid { gap: 3px; }
+  .calendar-empty, .day-cell { min-height: 86px; }
+  .day-cell { padding: 5px; }
+  .day-moon { width: 35px; height: 35px; }
+  .day-info { justify-content: center; }
+  .day-info span:first-child { display: none; }
+  .moon-footer { flex-direction: column; }
+}
+@media (max-width: 420px) {
+  .brand > span:last-child { display: none; }
+  .month-controls label > span { display: none; }
+  .moon-card-body { justify-content: space-around; gap: 12px; }
+  .large-moon { width: 112px; height: 112px; }
+  .moon-summary { width: min(210px, 45vw); grid-template-rows: 15px 44px minmax(54px, auto); min-height: 116px; }
+  .event-list { grid-template-columns: 1fr; }
+  .day-event { display: none; }
+  .calendar-empty, .day-cell { min-height: 75px; }
+}
+
+/* v0.6 · 月份控制并入顶栏，月亮卡片改为紧凑信息布局 */
+.topbar { position: relative; z-index: 20; gap: 18px; }
+.moon-header-controls { display: flex; min-width: 0; align-items: center; margin-left: auto; }
+.moon-header-controls .month-controls input { background: #151a20; }
+.moon-card-body {
+  display: grid;
+  grid-template-columns: minmax(196px, .75fr) minmax(0, 1.25fr);
+  gap: clamp(24px, 5vw, 58px);
+  min-height: 196px;
+  padding: 10px 6px 6px;
+}
+.large-moon { width: 196px; height: 196px; justify-self: center; }
+.moon-card-content { display: grid; min-width: 0; align-content: center; gap: 14px; }
+.moon-summary { display: block; width: auto; max-width: none; min-height: 0; }
+.moon-summary strong { display: block; font-size: clamp(27px, 3vw, 34px); }
+.moon-summary p { min-height: 0; margin-top: 8px; }
+.moon-card-content .moon-metrics { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.moon-card-content .moon-metrics > div { min-width: 0; }
+.moon-card-content .moon-metrics strong { overflow-wrap: anywhere; }
+
+@media (min-width: 901px) and (max-width: 1100px) {
+  .topbar { gap: 14px; }
+  .page-nav { gap: 14px; }
+}
+
+@media (max-width: 900px) {
+  .topbar { height: auto; min-height: 52px; flex-wrap: wrap; justify-content: flex-start; column-gap: 18px; }
+  .brand { order: 1; }
+  .page-nav { order: 2; }
+  .moon-header-controls {
+    order: 4;
+    width: 100%;
+    margin: 0;
+    padding: 8px 0;
+    border-top: 1px solid #20252c;
+  }
+  .moon-header-controls .month-controls { width: 100%; }
+  .moon-header-controls .month-controls label { min-width: 0; flex: 1; }
+  .moon-header-controls .month-controls input { width: 100%; }
+}
+
+@media (max-width: 700px) {
+  .topbar { column-gap: 14px; }
+  .moon-card-body { grid-template-columns: 150px minmax(0, 1fr); gap: 20px; min-height: 196px; }
+  .large-moon { width: 150px; height: 150px; }
+}
+
+@media (max-width: 480px) {
+  .moon-card-body { grid-template-columns: 132px minmax(0, 1fr); gap: 10px; min-height: 184px; }
+  .large-moon { width: 132px; height: 132px; }
+  .moon-card-content { gap: 9px; }
+  .moon-summary strong { font-size: 23px; }
+  .moon-summary p { margin-top: 5px; font-size: 10px; line-height: 1.45; }
+  .moon-card-content .moon-metrics { grid-template-columns: 1fr; gap: 4px; }
+  .moon-card-content .moon-metrics > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 5px 8px; }
+  .moon-card-content .moon-metrics strong { font-size: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .day-cell, .toast { transition: none; }
+}

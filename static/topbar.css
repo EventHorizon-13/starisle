@@ -1,0 +1,313 @@
+/* 三个页面共用的应用顶栏。页面样式只能定义各自控件，不再改变品牌、导航或顶栏尺寸。 */
+.app-shell, .solar-app, .moon-app {
+  width: 100%;
+  max-width: 1600px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 32px;
+  padding-left: 32px;
+}
+
+.moon-app > main {
+  width: 100%;
+  max-width: 1176px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.topbar.page-header {
+  position: relative;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  grid-template-rows: 52px;
+  width: 100%;
+  height: 52px;
+  min-height: 52px;
+  align-items: center;
+  column-gap: 20px;
+  border-bottom: 1px solid #20252c;
+}
+
+.page-header .brand {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  color: #f2f4f7;
+  text-decoration: none;
+}
+
+.page-header .brand-copy { display: grid; gap: 0; }
+.page-header .brand strong { font-size: 15px; font-weight: 650; letter-spacing: .08em; }
+.page-header .brand small { color: #69727e; font-size: 9px; letter-spacing: .12em; }
+.page-header .brand-mark {
+  display: block;
+  width: 27px;
+  height: 27px;
+  flex: none;
+  border: 0;
+  border-radius: 8px;
+  object-fit: contain;
+  background: transparent;
+  transform: none;
+}
+
+.page-header .page-nav {
+  display: flex;
+  height: 100%;
+  align-self: stretch;
+  gap: 22px;
+}
+.page-header .page-nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: #7f8791;
+  font-size: 11px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.page-header .page-nav a:hover, .page-header .page-nav a.active { color: #e9edf3; }
+.page-header .page-nav a.active::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: #7ea6ee;
+  content: '';
+}
+
+.page-header .topbar-context {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  align-items: center;
+  justify-self: end;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* 太阳系页面的主日期控件使用与另外两页相同的顶栏槽位。 */
+.page-header .solar-toolbar {
+  display: flex;
+  width: auto;
+  min-width: 0;
+  min-height: 0;
+  flex: none;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.page-header .solar-toolbar .toolbar-group { gap: 0; }
+.page-header .solar-toolbar .segmented { height: 32px; padding: 2px; }
+.page-header .solar-toolbar .segmented button { min-height: 26px; padding: 0 9px; }
+.page-header .solar-toolbar .date-control { min-width: 0; }
+.page-header .solar-toolbar .date-control input { width: 142px; height: 32px; }
+.page-header .solar-toolbar .quiet-button { height: 32px; margin: 0; padding: 0 9px; }
+
+@media (max-width: 1150px) {
+  .topbar.page-header { column-gap: 16px; }
+  .page-header .page-nav { gap: 14px; }
+}
+
+@media (max-width: 900px) {
+  .app-shell, .solar-app, .moon-app { padding-right: 20px; padding-left: 20px; }
+  .topbar.page-header {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: 52px 48px;
+    height: 100px;
+    min-height: 100px;
+    column-gap: 18px;
+  }
+  .page-header .brand { grid-column: 1; grid-row: 1; order: initial; }
+  .page-header .page-nav { grid-column: 2; grid-row: 1; order: initial; justify-self: end; }
+  .page-header .topbar-context {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    order: initial;
+    width: 100%;
+    height: 48px;
+    align-items: center;
+    justify-self: stretch;
+    padding: 7px 0 8px;
+    border-top: 1px solid #20252c;
+  }
+  .page-header .star-context { flex-direction: row; gap: 8px; }
+  .page-header .star-context .location-control { min-width: 0; flex: 1 1 0; }
+  .page-header .star-context .location-trigger { width: 100%; max-width: none; }
+  .page-header .star-context .time-row { width: min(174px, 58%); min-width: 0; flex: 0 1 174px; }
+  .page-header .star-context .time-field { min-width: 0; flex: 1; }
+  .page-header .star-context .time-field input { width: 100%; min-width: 0; }
+  .page-header .moon-context .month-controls { width: 100%; }
+  .page-header .moon-context .month-controls label { min-width: 0; flex: 1 1 126px; }
+  .page-header .moon-context .month-controls input { width: 100%; }
+  .page-header .solar-context .solar-toolbar { width: 100%; }
+  .page-header .solar-context .date-control { min-width: 0; flex: 1 1 142px; }
+  .page-header .solar-context .date-control input { width: 100%; min-width: 0; }
+}
+
+@media (max-width: 700px) {
+  .app-shell, .solar-app, .moon-app { padding-right: 12px; padding-left: 12px; }
+  .topbar.page-header {
+    grid-template-rows: 48px 48px;
+    height: 96px;
+    min-height: 96px;
+    column-gap: 12px;
+  }
+  .page-header .page-nav { gap: 4px; margin-right: 8px; }
+  .page-header .page-nav a { min-width: 38px; justify-content: center; padding: 0 5px; }
+  .page-header .topbar-context { height: 48px; }
+}
+
+@media (max-width: 520px) {
+  .page-header .brand-copy { display: none; }
+  /* Keep the observing coordinates and time on one compact row. */
+  .app-shell .topbar.page-header {
+    grid-template-rows: 48px 48px;
+    height: 96px;
+    min-height: 96px;
+  }
+  .app-shell .page-header .topbar-context.star-context {
+    display: flex;
+    height: 48px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding: 7px 0 8px;
+  }
+  .app-shell .page-header .star-context .location-control {
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0;
+  }
+  .app-shell .page-header .star-context .time-row {
+    width: min(180px, 56%);
+    min-width: 0;
+    flex: 0 1 180px;
+  }
+  .page-header .star-context .location-trigger { padding-right: 6px; padding-left: 6px; }
+  .page-header .star-context .time-field { padding-right: 5px; padding-left: 5px; }
+  .page-header .star-context .now-button { padding-right: 7px; padding-left: 7px; }
+  .page-header .moon-context .month-controls { gap: 4px; }
+  .page-header .moon-context .month-controls .this-month { padding-right: 7px; padding-left: 7px; }
+  .page-header .solar-toolbar { gap: 4px; }
+  .page-header .solar-toolbar .segmented button { padding-right: 6px; padding-left: 6px; }
+  .page-header .solar-toolbar .quiet-button { padding-right: 7px; padding-left: 7px; }
+}
+
+/* 三个页面共用的页脚：说明与技术信息分层，移动端收进同一张轻量卡片。 */
+.site-footer {
+  color: #68737f;
+}
+.site-footer-note {
+  min-width: 0;
+  margin: 0;
+  color: #626d79;
+}
+.site-footer-meta {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+.site-footer-item b {
+  margin-right: 6px;
+  color: #a8b8cf;
+  font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+.site-footer-runtime { color: #879ab4; }
+.site-footer-link { color: #9eb8df; }
+.site-footer-link:hover { border-color: #40516a; color: #c5d6ef; }
+.site-footer-link:focus-visible { outline: 2px solid #7ea6ee; outline-offset: 2px; }
+
+@media (min-width: 701px) {
+  .site-footer {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 14px !important;
+    padding: 0 !important;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    line-height: 1.6;
+  }
+  .site-footer-note {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .site-footer-meta {
+    flex: none;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 14px;
+  }
+  .site-footer-item,
+  .site-footer-link {
+    display: inline;
+    flex: none;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .site-footer-link { color: #90a7cc; }
+}
+
+@media (max-width: 700px) {
+  .site-footer {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 10px !important;
+    margin: 16px 0 0 !important;
+    padding: 12px !important;
+    border: 1px solid #202832;
+    border-radius: 10px;
+    background: #0e1217;
+    font-size: 11px;
+  }
+  .site-footer-note { color: #77828f; line-height: 1.65; }
+  .site-footer-meta {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 6px;
+    padding-top: 10px;
+    border-top: 1px solid #202832;
+  }
+  .site-footer-item,
+  .site-footer-link {
+    display: inline-flex;
+    max-width: 100%;
+    min-height: 25px;
+    align-items: center;
+    padding: 4px 8px;
+    border: 1px solid #252c34;
+    border-radius: 7px;
+    background: #11171d;
+    color: #7d8895;
+    font: 10px/1.45 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    text-decoration: none;
+    white-space: normal;
+  }
+  .site-footer-link { color: #9eb8df; }
+}

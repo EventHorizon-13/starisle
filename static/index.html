@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0e12" />
+    <meta name="description" content="按地点和时间查看夜空方位、天体位置与升落时刻。" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png?v=star-trails-20261017" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg?v=star-trails-20261017" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=star-trails-20261017" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152.png?v=star-trails-20261017" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon-167.png?v=star-trails-20261017" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="星屿" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="stylesheet" href="/styles.v0.46.css" />
+    <link rel="stylesheet" href="/topbar.css?v=0.9" />
+    <title>星屿 · StarIsle</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar page-header">
+        <a class="brand" href="/" aria-label="星屿 · StarIsle">
+          <img class="brand-mark" src="/icon.svg?v=star-trails-20261017" width="27" height="27" alt="" />
+          <span class="brand-copy"><strong>星屿</strong><small>StarIsle</small></span>
+        </a>
+        <nav class="page-nav" aria-label="页面导航">
+          <a class="active" href="/">星图</a>
+          <a href="/solar-system">太阳系</a>
+          <a href="/moon-calendar">月相</a>
+        </nav>
+        <div class="topbar-controls topbar-context star-context" aria-label="观测地点与时间">
+          <div class="location-control">
+            <button id="manualToggleBtn" class="location-trigger" aria-expanded="false" aria-controls="manualBlock">
+              <span class="pin-icon" aria-hidden="true">⌖</span>
+              <span id="locationLabel" class="location-name">等待定位</span>
+            </button>
+            <div id="manualBlock" class="manual-block location-popover" hidden>
+              <div class="location-method-row">
+                <button id="locateBtn" class="secondary-button" type="button">使用当前定位</button>
+                <span>或输入下方坐标</span>
+              </div>
+              <div class="control-grid">
+                <label class="field latitude-field"><span>纬度</span><input id="latInput" type="number" inputmode="decimal" step="0.0001" min="-90" max="90" placeholder="0.0000" /></label>
+                <label class="field longitude-field"><span>经度</span><input id="lonInput" type="number" inputmode="decimal" step="0.0001" min="-180" max="180" placeholder="0.0000" /></label>
+                <label class="field elevation-field"><span>海拔（米）</span><input id="elevationInput" type="number" inputmode="numeric" step="1" value="0" /></label>
+                <button id="applyLocationBtn" class="secondary-button" type="button">应用</button>
+              </div>
+            </div>
+          </div>
+          <div class="time-row">
+            <label class="time-field"><input id="timeInput" type="datetime-local" step="1" min="1550-01-01T00:00" max="2650-01-25T23:59:59" aria-label="观测时间" /></label>
+            <button id="nowBtn" class="now-button" aria-label="回到现在">现在</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="content-grid">
+          <section class="sky-panel panel">
+            <p id="cachedSkyNotice" class="cached-sky-notice" role="status" hidden></p>
+            <div class="sky-toolbar sky-toolbar-only" aria-label="星图显示设置">
+              <div class="sky-tool-section">
+                <div class="tool-group" role="group" aria-label="时间轨迹与显示范围">
+                  <div id="timelineMode" class="segmented timeline-mode" role="group" aria-label="时间轴步进方式">
+                    <button type="button" class="seg-button is-active" data-mode="hour" aria-pressed="true" title="按分钟查看前后数小时">小时</button>
+                    <button type="button" class="seg-button" data-mode="day" aria-pressed="false" title="每天同一时刻，前后各 30 天">按天</button>
+                  </div>
+                  <button id="satelliteMenuBtn" class="tool-button icon-only satellite-menu-button" aria-label="人造天体与空间站过境" title="人造天体与空间站过境" aria-expanded="false" aria-controls="satellitePopover">
+                    <svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 9 6 6m-7-4 5-5 5 5-5 5-5-5Zm-6-4 4-4 3 3-4 4-3-3Zm13 13 4-4 3 3-4 4-3-3ZM9 16l-3 3m-1-5a5 5 0 0 0 5 5"/></svg>
+                  </button>
+                  <button id="trailBtn" class="tool-button icon-only" aria-label="显示星星轨迹" title="显示星星轨迹" aria-pressed="false">
+                    <svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18c3-7 5-11 8-11s5 9 10 2"/><circle cx="3" cy="18" r="1.4"/><circle cx="11" cy="7" r="1.4"/><circle cx="21" cy="9" r="1.4"/></svg>
+                  </button>
+                  <div id="trailSpan" class="segmented" role="group" aria-label="轨迹范围：所选时间前后各多少小时">
+                    <button type="button" class="seg-button is-active" data-hours="12" aria-pressed="true">±12</button>
+                    <button type="button" class="seg-button" data-hours="24" aria-pressed="false">±24</button>
+                  </div>
+                  <button id="expandBtn" class="tool-button icon-only" aria-label="全屏查看" title="全屏查看" aria-pressed="false">
+                    <svg class="tool-icon icon-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/></svg>
+                    <svg class="tool-icon icon-collapse" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3v5H3m13-5v5h5M3 16h5v5m13-5h-5v5"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div id="satellitePopover" class="satellite-popover" hidden>
+              <div class="satellite-menu-heading"><strong>人造天体</strong><button id="satelliteCloseBtn" class="tool-button icon-only" type="button" aria-label="关闭人造天体菜单">×</button></div>
+              <p class="satellite-menu-note">中国空间站默认开启。其他天体逐个选择，最多同时显示 8 个；轨迹为当前时间前后 10 分钟。</p>
+              <input id="satelliteSearch" class="satellite-search" type="search" placeholder="筛选名称或 NORAD 编号" aria-label="筛选人造天体" />
+              <div id="satelliteChoices" class="satellite-choices"><span class="satellite-menu-note">正在加载轨道目录…</span></div>
+              <p id="satelliteDataNote" class="satellite-data-note" role="status"></p>
+              <details id="satellitePassDetails" class="satellite-pass-details">
+                <summary>中国空间站 · 近期可观测过境</summary>
+                <div id="satellitePassList" class="satellite-pass-list"></div>
+              </details>
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="skyCanvas" tabindex="0" aria-label="当前天空星图，可拖动平移、缩放查看"></canvas>
+              <div id="loadingOverlay" class="loading-overlay"><span class="spinner"></span><span>正在计算…</span></div>
+            </div>
+            <div class="sky-bottom-overlays">
+              <div class="sky-timeline" aria-label="星图时间轴">
+                <div class="sky-timeline-labels">
+                  <span id="timeSliderStart">—</span>
+                  <strong id="timeSliderCurrent">—</strong>
+                  <span id="timeSliderEnd">—</span>
+                </div>
+                <input id="timeSlider" type="range" min="-720" max="720" step="1" value="0" aria-label="按小时调整观测时间" />
+              </div>
+              <div class="sky-meta">
+                <button id="moonStatusBtn" class="moon-status" type="button" aria-label="查看月球详情">
+                  <span id="moonStatusGlyph" class="moon-status-glyph" aria-hidden="true">☾</span>
+                  <span><small>月球</small><strong id="moonStatusText">—</strong></span>
+                </button>
+                <span class="meta-sun" role="group" aria-label="太阳状态">
+                  <span class="meta-sun-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></span>
+                  <span><small>太阳</small><strong><span id="sunAltitude">—</span><span id="darknessLabel">—</span></strong></span>
+                </span>
+                <span id="trailNote" class="trail-note" hidden></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="side-column">
+            <section class="panel selected-panel">
+              <div id="emptySelection" class="empty-selection"><span class="empty-orbit" aria-hidden="true">◌</span><p>点选星图上的天体<br />或从列表中选择</p></div>
+              <div id="selectedDetails" class="selected-details" hidden>
+                <div class="selected-title">
+                  <span id="selectedGlyph" class="object-glyph" aria-hidden="true">✦</span>
+                  <div class="selected-copy">
+                    <div class="selected-name-row"><h3 id="selectedName">—</h3><span id="selectedKind" class="kind-pill">—</span></div>
+                    <span id="selectedSubline" class="selected-subline">—</span>
+                  </div>
+                </div>
+                <div class="metric-grid">
+                  <div><small>方位角</small><strong id="selectedAz">—</strong><span id="selectedCompass">—</span></div>
+                  <div><small>高度角</small><strong id="selectedAlt">—</strong><span id="selectedAltitudeHint">—</span></div>
+                </div>
+                <div id="eventsResult" class="events-result" hidden></div>
+              </div>
+            </section>
+
+            <section class="panel visible-panel">
+              <div class="panel-heading compact-heading">
+                <h2>地平线上方天体</h2>
+                <span id="visibleCount" class="count-badge" title="目录中位于几何地平线上方的天体数，不代表肉眼可见数量">—</span>
+              </div>
+              <div class="search-box">
+                <span aria-hidden="true">⌕</span>
+                <input id="searchInput" type="search" placeholder="搜索：M42、NGC 7000、织女星、HD 172167" autocomplete="off" aria-label="搜索天体" />
+                <button id="searchBtn" aria-label="搜索">↵</button>
+              </div>
+              <div id="searchResults" class="search-results" hidden></div>
+              <div id="visibleList" class="visible-list"></div>
+            </section>
+          </section>
+        </div>
+
+        <footer class="footer site-footer">
+          <p class="site-footer-note">天体列表按几何地平线筛选，不代表肉眼可见；实际观测还受日光、天气、遮挡与光污染影响。位置和时间只保存在本机浏览器。</p>
+          <div class="site-footer-meta">
+            <span class="site-footer-item"><b>星历</b>JPL DE440&nbsp; <span id="ephemerisRange">范围载入中</span> · AT-HYG · OpenNGC</span>
+            <span class="site-footer-item"><b>界面</b>v0.61</span>
+            <span id="jsStatus" class="site-footer-item site-footer-runtime">正在检查脚本</span>
+          </div>
+        <span class="site-footer-item"><a href="/licenses" target="_blank" rel="noopener">数据来源与许可</a></span>
+</footer>
+      </main>
+      <div id="toast" class="toast" role="status"></div>
+    </div>
+    <script>
+      // 脚本出错或没跑起来时，至少在页面上显示出原因，避免“点了没反应”查不出问题。
+      (function () {
+        function report(text) {
+          var status = document.getElementById("jsStatus");
+          if (status) { status.textContent = text; status.style.color = "#e2a66e"; }
+        }
+        window.addEventListener("error", function (event) {
+          report("脚本错误：" + (event.message || "未知错误"));
+        });
+        window.addEventListener("unhandledrejection", function (event) {
+          var reason = event.reason;
+          report("脚本出错：" + ((reason && reason.message) || reason || "未知错误"));
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+          var marker = document.getElementById("jsStatus");
+            if (marker) marker.textContent = window.__skyReady ? "脚本正常" : "脚本异常 · 请强制刷新";
+          if (window.__skyReady) return;
+            document.querySelectorAll("#trailBtn, #expandBtn, #nowBtn, #locateBtn, #manualToggleBtn").forEach(function (button) {
+            button.addEventListener("click", function () {
+              report("界面脚本没有加载成功，按钮无效：请强制刷新或清除本站数据");
+            });
+          });
+        });
+      })();
+    </script>
+    <script src="/app.v0.61.js" defer onerror="document.getElementById('jsStatus').textContent='脚本加载失败：请下拉刷新或清除本站数据后重开';"></script>
+  </body>
+</html>

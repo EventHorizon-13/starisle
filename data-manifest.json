@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "name": "de440.bsp",
+      "size": 119799808,
+      "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+      "profile": "basic",
+      "url": "https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/de440.bsp"
+    },
+    {
+      "name": "hip_main.dat",
+      "size": 53316318,
+      "sha256": "58ceabb104d647160d9437ce6e513a02a036bb4ad9f8879a5a22fd52943616e0",
+      "profile": "basic",
+      "url": "https://cdsarc.cds.unistra.fr/ftp/cats/I/239/hip_main.dat"
+    },
+    {
+      "name": "mar099s.bsp",
+      "size": 67594240,
+      "sha256": "997dc93ba640e476da7a494d2237dcdeb145e528db37be8ccee588c615e4e1ff",
+      "profile": "full",
+      "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/satellites/mar099s.bsp"
+    },
+    {
+      "name": "jup365.bsp",
+      "size": 1136581632,
+      "sha256": "dbf016c01ba4d022154838000cf3f06962cf958ddc503a366f7fe8f81495c5cb",
+      "profile": "full",
+      "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/satellites/jup365.bsp"
+    },
+    {
+      "name": "sat441l.bsp",
+      "size": 638564352,
+      "sha256": "5577a3b7bdfc24d7f8edeeeb49717b03a5eda806528c7d77080dcd3962dde3d7",
+      "profile": "full",
+      "url": "https://ssd.jpl.nasa.gov/ftp/eph/satellites/bsp/sat441l.bsp"
+    },
+    {
+      "name": "ura182.bsp",
+      "size": 698004480,
+      "sha256": "fd3275d760a8d7e9a7d58c1894196495fb41967d2507d0a986666a927fe88706",
+      "profile": "full",
+      "url": "https://ssd.jpl.nasa.gov/ftp/eph/satellites/bsp/ura182.bsp"
+    },
+    {
+      "name": "nep097.bsp",
+      "size": 105262080,
+      "sha256": "5c1132fdc48c54e5d2e4eb663e1ed1a876911eae9433c203f29a5a1b5e1fa9b1",
+      "profile": "full",
+      "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/satellites/nep097.bsp"
+    },
+    {
+      "name": "plu060.bsp",
+      "size": 135207936,
+      "sha256": "dfbb102491a26ed41ae08ca3f8963f22f0219df1d8f265ab87b9ad825a826fc6",
+      "profile": "full",
+      "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/satellites/plu060.bsp"
+    },
+    {
+      "name": "athyg_32_reduced_m10.csv.gz",
+      "profile": "full",
+      "catalog_source": true,
+      "url": "https://raw.githubusercontent.com/astronexus/ATHYG-Database/main/data/subsets/athyg_32_reduced_m10.csv.gz",
+      "size": 27940364,
+      "sha256": "1047d395fcd6a2298ededaf5815fbd53448d178fd3d4fcb1f98f95072f63ea4f"
+    },
+    {
+      "name": "NGC.csv",
+      "profile": "full",
+      "catalog_source": true,
+      "url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/v20260501/database_files/NGC.csv",
+      "size": 3876288,
+      "sha256": "840fe0c9ee1332e551b2e722a0e92726cd7b157914a3d2177602832aadd3aa9e"
+    }
+  ]
+}

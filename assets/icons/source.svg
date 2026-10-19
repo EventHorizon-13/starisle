@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#116FDE"/><stop offset=".48" stop-color="#1741A1"/><stop offset="1" stop-color="#271656"/></linearGradient>
+<radialGradient id="glow" cx=".1" cy=".05" r="1"><stop stop-color="#84E8FF" stop-opacity=".75"/><stop offset=".52" stop-color="#55ABFF" stop-opacity=".12"/><stop offset="1" stop-color="#122469" stop-opacity="0"/></radialGradient>
+<linearGradient id="glass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#DDFBFF" stop-opacity=".35"/><stop offset=".42" stop-color="#C8F3FF" stop-opacity=".06"/><stop offset=".75" stop-color="#9FAAFF" stop-opacity=".12"/><stop offset="1" stop-color="#D9C9FF" stop-opacity=".3"/></linearGradient>
+<linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#E0FFFF"/><stop offset=".25" stop-color="#A1DDFF" stop-opacity=".5"/><stop offset=".56" stop-color="#91BCFF" stop-opacity=".13"/><stop offset=".85" stop-color="#D8D0FF" stop-opacity=".8"/><stop offset="1" stop-color="#EBEDFF"/></linearGradient>
+<linearGradient id="tube" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFFFF"/><stop offset=".5" stop-color="#B5E4FF"/><stop offset="1" stop-color="#B9C6F5"/></linearGradient>
+<radialGradient id="bead" cx=".32" cy=".22" r=".85"><stop stop-color="#FFFFFF"/><stop offset=".35" stop-color="#D6F5FF"/><stop offset=".7" stop-color="#9EC8F2"/><stop offset="1" stop-color="#6889CC"/></radialGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFDEB"/><stop offset=".45" stop-color="#FFE4A9"/><stop offset="1" stop-color="#E7AC65"/></linearGradient>
+</defs>
+<rect width="512" height="512" rx="112" fill="url(#bg)"/>
+<rect width="512" height="512" rx="112" fill="url(#glow)"/>
+<rect x="2" y="2" width="508" height="508" rx="110" fill="none" stroke="url(#rim)" stroke-opacity=".45" stroke-width="2"/>
+<circle cx="256" cy="269" r="177" fill="#071B5C" fill-opacity=".25"/>
+<circle cx="256" cy="252" r="177" fill="url(#glass)" stroke="url(#rim)" stroke-width="5"/>
+<circle cx="256" cy="252" r="168" fill="none" stroke="#C7EAFF" stroke-opacity=".17" stroke-width="2"/>
+<path d="M102 231 A156 156 0 0 1 281 98" fill="none" stroke="#EEFFFF" stroke-opacity=".6" stroke-width="3" stroke-linecap="round"/>
+<defs>
+<linearGradient id="trailA" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#7DD4FF" stop-opacity=".18"/><stop offset=".55" stop-color="#A7E4FF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient>
+<linearGradient id="trailB" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#9CAFFF" stop-opacity=".1"/><stop offset=".6" stop-color="#C0C7FF"/><stop offset="1" stop-color="#EDF1FF"/></linearGradient>
+<linearGradient id="trailC" x1="1" y1="1" x2="0" y2="0"><stop stop-color="#FFDCAB" stop-opacity=".12"/><stop offset=".6" stop-color="#FFE6BC"/><stop offset="1" stop-color="#FFF7E6"/></linearGradient>
+</defs>
+<path d="M159 341 A134 134 0 1 1 389 245" fill="none" stroke="#0A2874" stroke-opacity=".2" stroke-width="19" stroke-linecap="round"/>
+<path d="M159 333 A134 134 0 1 1 389 237" fill="none" stroke="url(#trailA)" stroke-width="12" stroke-linecap="round"/>
+<path d="M161 329 A130 130 0 1 1 385 237" fill="none" stroke="#F4FDFF" stroke-opacity=".65" stroke-width="2" stroke-linecap="round"/>
+<path d="M181 317 A101 101 0 1 1 343 197" fill="none" stroke="url(#trailB)" stroke-width="10" stroke-linecap="round"/>
+<path d="M183 313 A97 97 0 1 1 339 199" fill="none" stroke="#FFFFFF" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/>
+<path d="M289 313 A68 68 0 1 1 240 185" fill="none" stroke="url(#trailC)" stroke-width="9" stroke-linecap="round"/>
+<circle cx="389" cy="237" r="9" fill="url(#bead)"/>
+<circle cx="343" cy="197" r="7" fill="url(#bead)"/>
+<circle cx="240" cy="185" r="6" fill="#FFF1D3"/>
+<path d="M256 233 Q259 249 275 252 Q259 255 256 271 Q253 255 237 252 Q253 249 256 233Z" fill="#F3FAFF"/>
+</svg>

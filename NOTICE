@@ -1,0 +1,8 @@
+StarIsle / 星屿 · StarIsle
+Application code and original icons: MIT (see LICENSE).
+
+The MIT license does not relicense third-party data, imagery or dependencies.
+OpenNGC and AT-HYG derived catalogues: CC BY-SA 4.0, with attribution and modifications documented in CATALOG_LICENSES.md and THIRD_PARTY_NOTICES.md.
+NASA imagery and JPL/CDS/IERS/CelesTrak data: see their original sources and usage terms in THIRD_PARTY_NOTICES.md.
+Third-party Python packages retain their respective upstream licenses and installed license notices.
+No affiliation or endorsement by NASA, JPL, ESA, CDS, IERS or CelesTrak is implied.

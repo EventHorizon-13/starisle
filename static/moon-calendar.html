@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0e12" />
+    <meta name="description" content="按月查看每日月相、照明比例与主要月相时刻。" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png?v=star-trails-20261017" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg?v=star-trails-20261017" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=star-trails-20261017" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152.png?v=star-trails-20261017" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon-167.png?v=star-trails-20261017" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="星屿" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preload" as="image" href="/moon-nasa-clementine.jpg" fetchpriority="high" />
+    <link rel="stylesheet" href="/moon-calendar.css?v=1.1" />
+    <link rel="stylesheet" href="/topbar.css?v=0.9" />
+    <title>月相日历 · 星屿</title>
+  </head>
+  <body>
+    <div class="moon-app">
+      <header class="topbar page-header">
+        <a class="brand" href="/" aria-label="星屿 · StarIsle">
+          <img class="brand-mark" src="/icon.svg?v=star-trails-20261017" width="27" height="27" alt="" />
+          <span class="brand-copy"><strong>星屿</strong><small>StarIsle</small></span>
+        </a>
+        <nav class="page-nav" aria-label="页面导航">
+          <a href="/">星图</a>
+          <a href="/solar-system">太阳系</a>
+          <a class="active" href="/moon-calendar">月相</a>
+        </nav>
+        <div class="moon-header-controls topbar-context moon-context" role="group" aria-label="月历月份设置">
+          <div class="month-controls">
+            <button id="prevMonthBtn" type="button" aria-label="上个月">‹</button>
+            <label><input id="monthInput" type="month" min="1550-01" max="2650-01" aria-label="月份" /></label>
+            <button id="nextMonthBtn" type="button" aria-label="下个月">›</button>
+            <button id="thisMonthBtn" class="this-month" type="button">现在</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="moon-layout">
+          <article class="moon-card panel">
+            <div class="card-heading">
+              <div><h2 id="selectedDate">—</h2><span id="selectedWeekday">—</span></div>
+              <span id="selectedPhaseTag" class="phase-tag">—</span>
+            </div>
+            <div class="moon-card-body">
+              <div id="largeMoon" class="large-moon" aria-label="所选日期月相"></div>
+              <div class="moon-card-content">
+                <div class="moon-summary">
+                  <strong id="selectedPhaseName">—</strong>
+                  <p id="selectedPhaseCopy">正在载入星历…</p>
+                </div>
+                <div class="moon-metrics">
+                  <div><small>照明比例</small><strong id="selectedIllumination">—</strong></div>
+                  <div><small>地月距离</small><strong id="selectedDistance">—</strong></div>
+                </div>
+              </div>
+            </div>
+            <div class="day-slider-wrap">
+              <div class="slider-labels"><span id="sliderStart">1 日</span><strong id="sliderCurrent">—</strong><span id="sliderEnd">—</span></div>
+              <input id="daySlider" type="range" min="0" max="30" step="1" value="0" aria-label="日期滑动条" />
+            </div>
+          </article>
+
+          <aside class="events-panel panel">
+            <div class="panel-heading"><div><h2>主要月相</h2><p id="eventMonth">—</p></div><span id="loadStatus" role="status">载入中</span></div>
+            <div id="eventList" class="event-list"></div>
+            <p class="events-note">新月、上弦、满月和下弦采用精确星历时刻。</p>
+          </aside>
+        </section>
+
+        <section class="calendar-panel panel">
+          <div class="calendar-heading">
+            <div><h2 id="calendarTitle">—</h2><p>点击日期或拖动上方滑杆查看详情</p></div>
+            <span class="calendar-legend"><i></i>今天</span>
+          </div>
+          <div class="weekday-row" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+          <div id="calendarGrid" class="calendar-grid" aria-label="月相月历"></div>
+        </section>
+
+        <footer class="moon-footer site-footer">
+          <p class="site-footer-note">主要月相时刻按当前设备时区显示，每日月相与距离取当地正午。</p>
+          <div class="site-footer-meta">
+            <span class="site-footer-item"><b>星历</b>JPL DE440</span>
+            <span class="site-footer-item"><b>月面影像</b>NASA/GSFC Clementine</span>
+          </div>
+        <span class="site-footer-item"><a href="/licenses" target="_blank" rel="noopener">数据来源与许可</a></span>
+</footer>
+      </main>
+    </div>
+    <div id="toast" class="toast" role="status"></div>
+    <script src="/moon-calendar.js?v=1.3" defer></script>
+  </body>
+</html>

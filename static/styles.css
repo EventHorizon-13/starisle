@@ -1,0 +1,950 @@
+:root {
+  color-scheme: dark;
+  --ink: #edf4f0;
+  --muted: #93a5a8;
+  --dim: #66797d;
+  --line: rgba(186, 216, 208, .14);
+  --panel: rgba(13, 29, 38, .88);
+  --teal: #94d7c2;
+  --teal-bright: #b2efda;
+  --gold: #f2ca88;
+  --bg: #08131b;
+  --font: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { min-width: 320px; background: var(--bg); }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--font);
+  font-synthesis: none;
+  background:
+    radial-gradient(ellipse at 48% -12%, rgba(51, 118, 119, .34), transparent 38rem),
+    radial-gradient(ellipse at 92% 55%, rgba(29, 67, 84, .24), transparent 36rem),
+    linear-gradient(165deg, #0b1a24 0%, #07131b 52%, #091820 100%);
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: '';
+  opacity: .13;
+  background-image: radial-gradient(#c2ebe1 0.55px, transparent .8px);
+  background-size: 37px 37px;
+  mask-image: linear-gradient(to bottom, #000, transparent 80%);
+}
+
+button, input { font: inherit; }
+button { color: inherit; }
+button, input, select { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.app-shell { max-width: 1200px; margin: 0 auto; padding: 0 30px 30px; }
+
+/* 顶栏 */
+.topbar {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: inline-flex; gap: 11px; align-items: center; text-decoration: none; color: var(--ink); }
+.brand > span:last-child { display: grid; gap: 1px; }
+.brand strong { font-size: 17px; letter-spacing: .14em; font-weight: 650; }
+.brand small { color: #71878a; font-size: 10px; letter-spacing: .16em; }
+.brand-mark { width: 30px; height: 30px; position: relative; display: inline-block; border: 1px solid rgba(148, 215, 194, .6); border-radius: 50%; }
+.brand-mark::before, .brand-mark::after { position: absolute; content: ''; background: var(--teal); }
+.brand-mark::before { width: 1px; height: 38px; left: 13px; top: -5px; transform: rotate(42deg); opacity: .75; }
+.brand-mark::after { width: 38px; height: 1px; left: -5px; top: 13px; transform: rotate(42deg); opacity: .75; }
+.brand-mark i { position: absolute; z-index: 1; display: block; width: 4px; height: 4px; border-radius: 50%; background: #d9fff2; box-shadow: 0 0 9px var(--teal); }
+.brand-mark i:nth-child(1) { top: 5px; left: 8px; }
+.brand-mark i:nth-child(2) { top: 17px; left: 19px; width: 3px; height: 3px; }
+.brand-mark i:nth-child(3) { top: 20px; left: 7px; width: 2px; height: 2px; }
+.topbar-right { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px; }
+.icon-button { border: 1px solid var(--line); border-radius: 9px; background: #132731; padding: 7px 11px; cursor: pointer; color: var(--teal); font-size: 12px; }
+
+main { padding-top: 22px; }
+
+/* 地点与时间 */
+.control-panel, .panel {
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, rgba(18, 39, 49, .92), var(--panel));
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, .18), inset 0 1px rgba(255, 255, 255, .025);
+}
+.control-panel { position: relative; margin-bottom: 18px; padding: 14px 16px; overflow: hidden; }
+.control-panel::before { position: absolute; top: 0; bottom: 0; left: 0; width: 2px; content: ''; background: linear-gradient(var(--teal), transparent); opacity: .72; }
+.control-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pin-icon { color: var(--teal); font-size: 16px; }
+.location-name { color: #dcece7; font-size: 13px; font-weight: 600; }
+.secondary-button { border: 1px solid rgba(148, 215, 194, .24); border-radius: 9px; padding: 8px 13px; background: rgba(46, 95, 87, .21); color: var(--teal-bright); font-size: 12px; cursor: pointer; transition: background .18s ease; }
+.secondary-button:hover { background: rgba(46, 95, 87, .4); }
+.secondary-button.busy { opacity: .55; pointer-events: none; }
+.text-button { border: 0; padding: 4px 2px; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.text-button:hover { color: var(--teal-bright); }
+.manual-block { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(186, 216, 208, .08); }
+.location-settings-button::after { margin-left: 6px; content: '⌄'; font-size: 10px; }
+.location-settings-button[aria-expanded="true"]::after { content: '⌃'; }
+.location-method-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.location-method-row > span { color: #72878b; font-size: 11px; }
+.control-grid { display: grid; grid-template-columns: 1fr 1fr .9fr auto; gap: 9px; }
+.field { min-width: 0; display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 10px; border: 1px solid rgba(180, 214, 205, .10); border-radius: 9px; background: rgba(4, 15, 22, .42); }
+.field span { flex: none; color: #72878b; font-size: 11px; }
+.field input { min-width: 0; width: 100%; border: 0; outline: none; color: #dae8e3; background: transparent; font: 12px var(--mono); }
+.field input::placeholder { color: #65777a; }
+.time-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding-top: 11px; border-top: 1px solid rgba(186, 216, 208, .08); }
+.time-field { display: flex; align-items: center; gap: 7px; color: #8bada2; }
+.time-icon { font-size: 15px; }
+.time-field input { border: 0; outline: 0; color: #cfe0d9; background: transparent; font: 12px var(--mono); color-scheme: dark; }
+.now-button { border: 0; border-radius: 8px; padding: 7px 11px; background: rgba(148, 215, 194, .11); color: var(--teal-bright); font-size: 12px; cursor: pointer; }
+
+/* 主体 */
+.content-grid { display: grid; grid-template-columns: minmax(0, 1.62fr) minmax(320px, .8fr); gap: 18px; align-items: start; }
+.panel { padding: 18px; }
+.panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.panel-heading h2 { margin: 0; font-size: 17px; line-height: 1.2; letter-spacing: -.02em; font-weight: 650; }
+.compact-heading { align-items: start; }
+.sky-panel { position: relative; overflow: hidden; border-color: rgba(148, 215, 194, .2); }
+.sky-panel::before { position: absolute; inset: 0; pointer-events: none; content: ''; background: radial-gradient(circle at 50% 42%, rgba(49, 102, 111, .1), transparent 55%); }
+.sky-panel > * { position: relative; }
+.sky-toolbar { display: flex; align-items: center; margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; }
+.sky-toolbar-only { justify-content: flex-end; }
+.sky-tool-section { display: flex; min-width: 0; align-items: center; }
+.tool-group { display: inline-flex; align-items: center; gap: 6px; }
+.tool-button { min-width: 32px; height: 30px; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: rgba(19, 39, 49, .72); color: var(--teal-bright); font-size: 12px; cursor: pointer; }
+.tool-button.icon-only { display: grid; place-items: center; width: 30px; min-width: 30px; padding: 0; }
+.tool-icon { display: block; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icon-collapse { display: none; }
+#expandBtn[aria-pressed="true"] .icon-expand { display: none; }
+#expandBtn[aria-pressed="true"] .icon-collapse { display: block; }
+.tool-button:hover { background: rgba(46, 95, 87, .45); }
+.tool-button[aria-pressed="true"] { border-color: rgba(148, 215, 194, .5); background: rgba(63, 124, 108, .38); color: #e3fff4; }
+.segmented { display: inline-flex; align-items: center; gap: 2px; height: 30px; padding: 2px 4px 2px 2px; border: 1px solid var(--line); border-radius: 9px; background: rgba(19, 39, 49, .72); }
+.seg-button { min-width: 26px; height: 24px; padding: 0 7px; border: 0; border-radius: 7px; background: transparent; color: #8fb3ac; font: 11px var(--mono); cursor: pointer; transition: background .15s ease, color .15s ease; }
+.seg-button:hover { background: rgba(148, 215, 194, .12); color: var(--teal-bright); }
+.seg-button.is-active { background: rgba(63, 124, 108, .55); color: #e3fff4; }
+.trail-note { color: #9acbbc; }
+.canvas-wrap { position: relative; width: min(100%, 780px); margin: 14px auto 0; aspect-ratio: 1; filter: drop-shadow(0 22px 34px rgba(0, 0, 0, .24)); }
+#skyCanvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
+#skyCanvas:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.sky-timeline { margin-top: 10px; padding: 9px 11px 7px; border: 1px solid rgba(186, 216, 208, .09); border-radius: 10px; background: rgba(4, 15, 22, .28); }
+.sky-timeline-labels { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; color: #6f8588; font: 10px var(--mono); }
+.sky-timeline-labels strong { color: #b9cfe9; font-size: 11px; font-weight: 550; text-align: center; }
+.sky-timeline-labels span:last-child { text-align: right; }
+#timeSlider { display: block; width: 100%; height: 18px; margin: 4px 0 0; accent-color: var(--teal); cursor: pointer; }
+.loading-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 10px; color: #a7bfba; background: rgba(8, 19, 27, .83); border-radius: 50%; font-size: 12px; transition: opacity .3s ease; }
+.spinner { width: 15px; height: 15px; border: 1px solid rgba(148, 215, 194, .24); border-top-color: var(--teal); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.sky-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; margin-top: 14px; padding-top: 13px; border-top: 1px solid rgba(186, 216, 208, .09); color: var(--muted); font-size: 11px; }
+.moon-status { display: inline-flex; align-items: center; gap: 9px; min-height: 42px; padding: 6px 11px 6px 8px; border: 1px solid rgba(235, 231, 201, .2); border-radius: 12px; background: linear-gradient(135deg, rgba(226, 225, 195, .11), rgba(148, 215, 194, .04)); color: #edf0dd; cursor: pointer; text-align: left; transition: border-color .18s ease, background .18s ease, transform .18s ease; }
+.moon-status:hover { transform: translateY(-1px); border-color: rgba(235, 231, 201, .4); background: rgba(226, 225, 195, .14); }
+.moon-status.is-below { border-color: rgba(148, 174, 175, .14); background: rgba(85, 111, 117, .08); color: #b4c2bf; }
+.moon-status-glyph { display: grid; place-items: center; width: 29px; height: 29px; border: 1px solid rgba(240, 237, 206, .24); border-radius: 50%; background: rgba(234, 234, 207, .1); color: #f1efd8; font-size: 18px; box-shadow: 0 0 16px rgba(231, 230, 201, .1); }
+.moon-status > span:last-child { display: grid; gap: 2px; min-width: 0; }
+.moon-status small { color: #8fa6a5; font-size: 9px; letter-spacing: .12em; }
+.moon-status strong { font-size: 11px; font-weight: 550; white-space: normal; }
+.moon-status { flex: 1 1 0; min-width: 0; }
+.meta-sun { display: inline-flex; flex: 1 1 0; align-items: center; gap: 9px; min-width: 0; min-height: 38px; padding: 5px 10px 5px 6px; border: 1px solid #2c333c; border-radius: 8px; background: #151a20; color: #d9dde3; }
+.meta-sun > span:last-child { display: grid; gap: 2px; min-width: 0; }
+.meta-sun small { color: #707985; font-size: 9px; letter-spacing: .12em; }
+.meta-sun strong { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 11px; font-weight: 500; white-space: nowrap; }
+.meta-sun strong span:first-child { color: #d8dde4; font-family: var(--mono); }
+.meta-sun strong span:last-child { overflow: hidden; color: #8796aa; text-overflow: ellipsis; }
+.meta-sun-glyph { display: grid; flex: none; place-items: center; width: 27px; height: 27px; border-radius: 6px; background: #20262d; color: #e4e5df; }
+.meta-sun-glyph svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+
+/* 天体详情 */
+.side-column { display: grid; gap: 16px; }
+.kind-pill, .count-badge { flex: none; padding: 5px 8px; border: 1px solid rgba(148, 215, 194, .16); border-radius: 99px; color: #9acbbc; background: rgba(60, 111, 100, .13); font-size: 11px; }
+.count-badge { min-width: 30px; text-align: center; color: #d9c08e; border-color: rgba(242, 202, 136, .18); background: rgba(156, 116, 53, .10); font: 12px var(--mono); }
+.empty-selection { display: flex; min-height: 128px; flex-direction: column; align-items: center; justify-content: center; color: #72878b; text-align: center; font-size: 12px; line-height: 1.7; }
+.empty-selection p { margin: 8px 0 0; }
+.empty-orbit { color: #64877e; font-size: 28px; line-height: 1; }
+.selected-details { padding-top: 0; }
+.selected-title { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+.selected-copy { min-width: 0; flex: 1 1 auto; }
+.selected-name-row { display: flex; width: 100%; min-width: 0; min-height: 24px; align-items: center; justify-content: space-between; gap: 10px; }
+.object-glyph { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid rgba(148, 215, 194, .20); border-radius: 13px; background: rgba(78, 135, 117, .12); color: var(--teal-bright); font-size: 20px; }
+.selected-title h3 { min-width: 0; flex: 1 1 auto; margin: 0; overflow: hidden; font-size: 19px; font-weight: 600; line-height: 24px; letter-spacing: -.02em; text-overflow: ellipsis; white-space: nowrap; }
+.selected-name-row .kind-pill { display: inline-flex; height: 22px; align-items: center; padding: 0 7px; line-height: 1; }
+.selected-subline { display: block; margin-top: 3px; color: #829597; font-size: 11px; }
+.metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.metric-grid > div { display: grid; gap: 4px; min-height: 68px; padding: 11px 12px; border: 1px solid rgba(186, 216, 208, .09); border-radius: 12px; background: linear-gradient(145deg, rgba(3, 14, 20, .38), rgba(15, 40, 46, .18)); }
+.metric-grid small { color: #718589; font-size: 11px; }
+.metric-grid strong { color: #e0eee7; font: 17px var(--mono); }
+.metric-grid span { color: #95c7b4; font-size: 11px; }
+.events-button { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-top: 11px; padding: 11px 12px; border: 1px solid rgba(148, 215, 194, .20); border-radius: 9px; background: rgba(59, 112, 98, .16); color: #b7e4d4; text-align: left; font-size: 12px; cursor: pointer; }
+.events-button span:last-child { font-size: 15px; }
+.events-label { flex: 1; }
+.events-result { margin-top: 10px; padding: 8px 10px; border: 1px solid rgba(186, 216, 208, .08); border-radius: 9px; background: rgba(3, 14, 20, .24); }
+.events-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.event-row { display: grid; min-width: 0; min-height: 52px; align-content: center; justify-items: center; gap: 3px; padding: 5px 4px; border-right: 1px solid rgba(186, 216, 208, .06); font-size: 12px; text-align: center; }
+.event-row:nth-child(3n), .event-row:last-child { border-right: 0; }
+.event-row span:first-child { color: #799194; }
+.event-row strong { overflow: hidden; max-width: 100%; color: #d6e7e0; font: 12px var(--mono); text-overflow: ellipsis; white-space: nowrap; }
+.event-row small { overflow: hidden; max-width: 100%; color: #91c6af; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 搜索与可见列表 */
+.search-box { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding: 0 9px 0 11px; height: 40px; border: 1px solid rgba(186, 216, 208, .11); border-radius: 10px; background: rgba(4, 15, 22, .44); color: #86a29e; }
+.search-box > span { font-size: 17px; }
+.search-box input { min-width: 0; flex: 1; border: 0; outline: 0; color: #e1ede7; background: transparent; font-size: 12px; }
+.search-box input::placeholder { color: #65797c; }
+.search-box button { width: 26px; height: 26px; border: 0; border-radius: 7px; background: rgba(148, 215, 194, .13); color: var(--teal); cursor: pointer; }
+.search-results { display: grid; gap: 3px; margin-top: 8px; max-height: 190px; overflow: auto; }
+.search-result { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px; border: 0; border-radius: 7px; background: rgba(148, 215, 194, .06); color: #dce9e3; text-align: left; font-size: 12px; cursor: pointer; }
+.search-result:hover { background: rgba(148, 215, 194, .13); }
+.search-result small { color: #7f9a98; font-size: 11px; }
+.visible-panel { padding-bottom: 10px; }
+.visible-list { display: grid; gap: 1px; max-height: 260px; overflow: auto; padding-right: 3px; scrollbar-color: #36524f transparent; scrollbar-width: thin; }
+.object-row { width: 100%; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 9px 7px; border: 0; border-bottom: 1px solid rgba(186, 216, 208, .055); border-radius: 9px; background: transparent; text-align: left; cursor: pointer; transition: background .15s ease, transform .15s ease; }
+.object-row:hover, .object-row.active { background: rgba(148, 215, 194, .075); transform: translateX(2px); }
+.row-glyph { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid rgba(194, 224, 212, .11); border-radius: 8px; color: #a7d9c3; font-size: 14px; }
+.object-row[data-kind="行星"] .row-glyph, .object-row[data-kind="卫星"] .row-glyph, .object-row[data-kind="矮行星"] .row-glyph { color: #edc988; border-color: rgba(242, 202, 136, .15); }
+.row-name { overflow: hidden; color: #d3e2dd; font-size: 12px; white-space: nowrap; text-overflow: ellipsis; }
+.row-sub { display: block; margin-top: 3px; color: #6f8588; font-size: 10px; }
+.row-direction { color: #9ac9b8; text-align: right; font: 11px var(--mono); white-space: nowrap; }
+.row-direction small { display: block; margin-top: 3px; color: #71868a; font-size: 10px; }
+.empty-list { padding: 13px 4px; color: #718589; font-size: 12px; line-height: 1.6; }
+
+.footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px 14px; margin-top: 18px; color: #6a7f83; font-size: 11px; line-height: 1.6; }
+.toast { position: fixed; z-index: 20; left: 50%; bottom: max(22px, env(safe-area-inset-bottom)); max-width: calc(100vw - 34px); transform: translate(-50%, 20px); opacity: 0; pointer-events: none; padding: 10px 14px; border: 1px solid rgba(148, 215, 194, .22); border-radius: 9px; background: #17303a; color: #d7ece3; box-shadow: 0 12px 32px rgba(0, 0, 0, .3); font-size: 12px; transition: .2s ease; }
+.toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+/* 全屏查看：把天空卡片铺满视口，星图随之放大 */
+body.sky-expanded { overflow: hidden; }
+.sky-panel.expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 12px 16px 14px;
+  border: 0;
+  border-radius: 0;
+  overflow: auto;
+  background: linear-gradient(180deg, #0a1a23, #08131b 62%);
+}
+.sky-panel.expanded .canvas-wrap { width: 100%; max-width: none; min-height: 180px; margin: 8px 0 0; aspect-ratio: auto; filter: none; }
+.sky-panel.expanded .loading-overlay { border-radius: 8px; }
+
+@media (max-width: 900px) {
+  .app-shell { padding: 0 20px 28px; }
+  .content-grid { grid-template-columns: minmax(0, 1.15fr) minmax(290px, .85fr); gap: 12px; }
+  .control-grid { grid-template-columns: 1fr 1fr; }
+  .secondary-button { min-height: 38px; }
+}
+
+@media (max-width: 700px) {
+  .app-shell { padding: 0 14px calc(24px + env(safe-area-inset-bottom)); }
+  .topbar { height: 48px; }
+  .topbar-right { font-size: 11px; }
+  main { padding-top: 14px; }
+  .control-panel { padding: 12px; margin-bottom: 12px; border-radius: 12px; }
+  .location-name { flex: 1; font-size: 12px; }
+  .location-method-row { align-items: stretch; flex-direction: column; gap: 7px; }
+  .location-method-row > span { padding-left: 2px; }
+  .control-grid { grid-template-columns: 1fr 1fr; gap: 7px; }
+  .field { height: 36px; padding: 0 8px; }
+  .field span { font-size: 11px; }
+  .field input { font-size: 11px; }
+  .secondary-button { padding: 8px 10px; font-size: 12px; }
+  .time-row { gap: 8px; }
+  .time-field { min-width: 0; flex: 1; }
+  .time-field input { min-width: 0; width: 100%; font-size: 11px; }
+  .content-grid { display: flex; flex-direction: column; gap: 12px; }
+  .sky-panel, .side-column { width: 100%; }
+  .side-column { display: contents; }
+  .sky-panel { order: 0; }
+  .selected-panel { order: 1; }
+  .visible-panel { order: 2; }
+  .panel { border-radius: 12px; padding: 13px; }
+  .canvas-wrap { width: 100%; }
+  .sky-toolbar { flex: 1 0 100%; width: 100%; margin: 0; justify-content: flex-end; }
+  .sky-tool-section, .tool-group { width: 100%; }
+  .tool-group { gap: 5px; }
+  #expandBtn { margin-left: auto; }
+  .tool-button { height: 34px; padding: 0 11px; }
+  .segmented { height: 34px; }
+  .seg-button { min-width: 34px; height: 28px; font-size: 12px; }
+  .sky-timeline { padding-right: 8px; padding-left: 8px; }
+  .sky-timeline-labels { gap: 5px; font-size: 9px; }
+  .sky-timeline-labels strong { font-size: 10px; }
+  .panel-heading h2 { font-size: 15px; }
+  .sky-meta { gap: 8px 12px; font-size: 10px; }
+  .moon-status { order: 0; width: auto; flex-basis: 0; justify-content: flex-start; }
+  .moon-status strong { white-space: nowrap; }
+  .trail-note { flex-basis: 100%; }
+  .meta-sun { margin-left: 0; flex-basis: 0; }
+  .footer { flex-direction: column; margin: 14px 2px 0; font-size: 10px; }
+}
+
+@media (max-width: 390px) {
+  .app-shell { padding-right: 11px; padding-left: 11px; }
+  .brand strong { font-size: 15px; }
+  .brand-mark { transform: scale(.9); }
+  .control-row { gap: 8px; }
+}
+
+/* v0.12 · 现代简约主题 */
+:root {
+  --ink: #f2f4f7;
+  --muted: #929aa5;
+  --dim: #68717d;
+  --line: #242a31;
+  --panel: #11151a;
+  --teal: #7ea6ee;
+  --teal-bright: #a9c3f5;
+  --gold: #d9dde5;
+  --bg: #0b0e12;
+}
+
+html { background: var(--bg); }
+body {
+  color: var(--ink);
+  background: #0b0e12;
+}
+body::before { display: none; }
+
+.app-shell { max-width: 1600px; padding: 0 32px 40px; }
+.topbar { height: 52px; border-color: #20252c; }
+.brand { gap: 10px; }
+.brand > span:last-child { gap: 0; }
+.brand strong { font-size: 15px; font-weight: 650; letter-spacing: .08em; }
+.brand small { color: #69727e; font-size: 9px; letter-spacing: .12em; }
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border: 0;
+  border-radius: 8px;
+  background: #7ea6ee;
+}
+.brand-mark::before { position: static; width: 7px; height: 7px; border-radius: 50%; background: #0b0e12; transform: none; opacity: 1; }
+.brand-mark::after, .brand-mark i { display: none; }
+.topbar-right { gap: 8px; color: #7f8791; font-size: 11px; }
+.icon-button { border-color: #2a3038; border-radius: 7px; background: #151a20; color: #b9c7dc; }
+
+main { padding-top: 24px; }
+.control-panel, .panel {
+  border: 1px solid #242a31;
+  border-radius: 12px;
+  background: #11151a;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.control-panel { margin-bottom: 14px; padding: 12px 14px; overflow: visible; }
+.control-panel::before, .sky-panel::before { display: none; }
+.control-row { gap: 9px; }
+.pin-icon { color: #7ea6ee; font-size: 14px; }
+.location-name { color: #dce1e8; font-size: 12px; font-weight: 550; }
+.secondary-button, .now-button {
+  border: 1px solid #2b323b;
+  border-radius: 7px;
+  background: #171c22;
+  color: #c9d2df;
+  transition: border-color .15s ease, background .15s ease;
+}
+.secondary-button:hover, .now-button:hover { border-color: #465164; background: #1c222a; }
+.text-button { color: #7f8995; text-decoration: none; }
+.text-button:hover { color: #b8c3d2; }
+.manual-block, .time-row { border-color: #22272e; }
+.field, .search-box {
+  border-color: #292f37;
+  border-radius: 8px;
+  background: #0d1116;
+}
+.field span { color: #737d89; }
+.field input, .time-field input, .search-box input { color: #dce2ea; }
+.time-field, .time-icon { color: #7f8995; }
+
+.content-grid { grid-template-columns: minmax(0, 1.7fr) minmax(310px, .78fr); gap: 14px; }
+.panel { padding: 16px; }
+.panel-heading h2 { color: #eef1f5; font-size: 15px; font-weight: 620; letter-spacing: 0; }
+.sky-panel { border-color: #272e36; background: #0f1318; }
+.sky-caption { color: #717b87; }
+.sky-toolbar { border: 0; background: transparent; }
+.tool-group { gap: 4px; }
+.tool-button, .segmented {
+  border-color: #292f37;
+  border-radius: 7px;
+  background: #151a20;
+  color: #aab4c2;
+}
+.tool-button { height: 29px; }
+.tool-button:hover { border-color: #3c4654; background: #1b2128; }
+.tool-button[aria-pressed="true"] { border-color: #526f9f; background: #1a2638; color: #b9d0f7; }
+.seg-button { color: #788391; }
+.seg-button:hover { background: #20262e; color: #c0c8d3; }
+.seg-button.is-active { background: #29354a; color: #c7d8f6; }
+.trail-note { color: #93aedb; }
+.sky-timeline { border-color: #22282f; background: #0d1116; }
+.sky-timeline-labels { color: #68727e; }
+.sky-timeline-labels strong { color: #b6c9e7; }
+.canvas-wrap { margin-top: 10px; filter: none; }
+.loading-overlay { color: #aab2bd; background: rgba(11, 14, 18, .9); }
+.spinner { border-color: #303843; border-top-color: #7ea6ee; }
+
+.sky-meta { gap: 8px 12px; margin-top: 10px; padding-top: 12px; border-color: #22282f; color: #7d8793; }
+.moon-status {
+  min-height: 38px;
+  padding: 5px 10px 5px 6px;
+  border-color: #2c333c;
+  border-radius: 8px;
+  background: #151a20;
+  color: #d9dde3;
+  transition: border-color .15s ease, background .15s ease;
+}
+.moon-status:hover { transform: none; border-color: #465164; background: #1a2027; }
+.moon-status.is-below { border-color: #272d35; background: #13171c; color: #9aa3ad; }
+.moon-status-glyph {
+  width: 27px;
+  height: 27px;
+  border: 0;
+  border-radius: 6px;
+  background: #20262d;
+  color: #e4e5df;
+  box-shadow: none;
+}
+.moon-status small { color: #707985; }
+.moon-status strong { font-weight: 500; }
+
+.side-column { gap: 14px; }
+.kind-pill, .count-badge {
+  border-color: #2a3139;
+  border-radius: 6px;
+  background: #171c22;
+  color: #98a8bd;
+}
+.count-badge { color: #b6c6df; font-weight: 500; }
+.empty-selection, .empty-list { color: #69737f; }
+.empty-orbit { color: #4f5b69; }
+.object-glyph {
+  border-color: #303844;
+  border-radius: 9px;
+  background: #19212c;
+  color: #a9c3f5;
+}
+.selected-title h3 { color: #f0f2f5; font-size: 18px; }
+.selected-subline { color: #7b8490; }
+.metric-grid > div {
+  min-height: 66px;
+  border-color: #262d35;
+  border-radius: 9px;
+  background: #0e1217;
+}
+.metric-grid small { color: #707985; }
+.metric-grid strong { color: #e6e9ee; }
+.metric-grid span { color: #8fa6c8; }
+.events-button {
+  border-color: #313c4d;
+  border-radius: 8px;
+  background: #182131;
+  color: #aec5eb;
+}
+.events-button:hover { border-color: #526f9f; background: #1c293c; }
+.events-result { border-color: #252c34; background: #0e1217; }
+.event-row { border-color: #20262d; }
+.event-row span:first-child { color: #788491; }
+.event-row strong { color: #dce2e9; }
+.event-row small { color: #8fa6c8; }
+
+.search-box { height: 38px; }
+.search-box > span { color: #707a86; }
+.search-box button { border-radius: 6px; background: #20262e; color: #aebed5; }
+.search-result { border: 1px solid transparent; border-radius: 7px; background: #151a20; color: #d9dee5; }
+.search-result:hover { border-color: #2d3540; background: #1a2027; }
+.search-result small { color: #737d89; }
+.visible-list { scrollbar-color: #353d47 transparent; }
+.object-row { border-bottom-color: #20262d; border-radius: 7px; }
+.object-row:hover, .object-row.active { background: #181e25; transform: none; }
+.row-glyph { border-color: #2a3139; border-radius: 7px; color: #9db7e8; }
+.object-row[data-kind="行星"] .row-glyph, .object-row[data-kind="卫星"] .row-glyph, .object-row[data-kind="矮行星"] .row-glyph { border-color: #344156; color: #a8bee4; }
+.row-name { color: #d7dce3; }
+.row-sub { color: #68727e; }
+.row-direction { color: #93a9c9; }
+.row-direction small { color: #68727e; }
+.footer { color: #59636f; }
+.toast { border-color: #343c47; border-radius: 8px; background: #181e25; color: #dce2e9; box-shadow: 0 12px 32px rgba(0, 0, 0, .35); }
+.sky-panel.expanded { background: #0b0e12; }
+
+@media (max-width: 900px) {
+  .app-shell { padding-right: 20px; padding-left: 20px; }
+  .content-grid { grid-template-columns: minmax(0, 1.15fr) minmax(290px, .85fr); gap: 12px; }
+}
+
+@media (max-width: 700px) {
+  .app-shell { padding-right: 12px; padding-left: 12px; }
+  .topbar { height: 48px; }
+  main { padding-top: 12px; }
+  .control-panel, .panel { border-radius: 10px; }
+  .control-panel { margin-bottom: 10px; }
+  .panel { padding: 12px; }
+  .content-grid { gap: 10px; }
+  .sky-toolbar { flex: 1 0 100%; width: 100%; margin: 0; }
+  .tool-group { flex: none; }
+  .moon-status { width: auto; }
+}
+
+@media (max-width: 700px) {
+  .sky-panel.expanded { padding: 10px 12px; }
+  .sky-panel.expanded .sky-toolbar { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; }
+  .sky-panel.expanded .sky-tool-section { width: auto; flex: 1 1 auto; }
+  .sky-panel.expanded .sky-meta { margin-top: 7px; padding-top: 7px; }
+}
+
+/* v0.13 · 桌面排版与自动升落信息 */
+@media (min-width: 901px) {
+  .control-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0 22px;
+  }
+  .control-row {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+    flex-wrap: nowrap;
+  }
+  .location-name {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .control-row button { flex: none; }
+  .time-row {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    padding: 0 0 0 22px;
+    border-top: 0;
+    border-left: 1px solid #252b32;
+    white-space: nowrap;
+  }
+  .time-field input { width: 164px; }
+  .manual-block {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+  }
+}
+
+.content-grid { align-items: stretch; }
+.sky-panel { min-width: 0; }
+.side-column {
+  min-height: 0;
+  height: 100%;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.selected-panel { min-height: 0; }
+.visible-panel {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  padding-bottom: 12px;
+}
+.visible-list {
+  min-height: 140px;
+  max-height: none;
+  flex: 1;
+}
+.events-result {
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 8px;
+}
+.event-row { min-height: 52px; padding: 5px 4px; }
+.events-loading {
+  display: flex;
+  min-height: 78px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #7d8793;
+  font-size: 11px;
+}
+.events-loading .spinner { width: 13px; height: 13px; }
+
+@media (max-width: 700px) {
+  .side-column { height: auto; }
+  .visible-list { max-height: 320px; }
+}
+
+/* v0.14 · 右栏只服从星图高度，不参与撑高外层网格 */
+@media (min-width: 701px) {
+  .content-grid { align-items: start; }
+  .side-column {
+    display: flex;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    flex-direction: column;
+    gap: 14px;
+    overflow: hidden;
+  }
+  .selected-panel {
+    min-height: 0;
+    max-height: 55%;
+    flex: 0 1 auto;
+    overflow: auto;
+    scrollbar-color: #353d47 transparent;
+    scrollbar-width: thin;
+  }
+  .visible-panel {
+    min-height: 0;
+    flex: 1 1 0;
+    overflow: hidden;
+  }
+}
+
+/* v0.17 · 实时月相图标 */
+.moon-phase-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+.moon-status-glyph .moon-phase-icon { width: 21px; height: 21px; }
+.object-glyph .moon-phase-icon { width: 27px; height: 27px; }
+
+/* 应用页面切换 */
+.page-nav { display: flex; align-self: stretch; gap: 22px; }
+.page-nav a { position: relative; display: inline-flex; align-items: center; color: #7f8791; font-size: 11px; text-decoration: none; }
+.page-nav a:hover, .page-nav a.active { color: #e9edf3; }
+.page-nav a.active::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--teal); content: ''; }
+@media (max-width: 700px) {
+  .topbar { justify-content: flex-start; gap: 20px; }
+  .page-nav { gap: 12px; }
+  .topbar-right { margin-left: auto; }
+}
+@media (max-width: 420px) {
+  .topbar { gap: 12px; }
+  .brand > span:last-child { display: none; }
+  .topbar-right { font-size: 0; }
+}
+
+/* v0.27 · 桌面工作区保持一屏，星图同时填满卡片宽度与高度 */
+@media (min-width: 901px) {
+  body { overflow: hidden; }
+  .app-shell { height: 100vh; height: 100dvh; padding-bottom: 12px; }
+  main {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 10px;
+    height: calc(100vh - 52px);
+    height: calc(100dvh - 52px);
+    min-height: 0;
+    padding-top: 12px;
+  }
+  .control-panel { margin-bottom: 0; padding-top: 9px; padding-bottom: 9px; }
+  .content-grid { height: 100%; min-height: 0; }
+  .sky-panel, .side-column { height: 100%; min-height: 0; }
+  .sky-panel {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    padding: 13px 15px;
+  }
+  .canvas-wrap {
+    align-self: stretch;
+    justify-self: stretch;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    aspect-ratio: auto;
+  }
+  .loading-overlay { border-radius: 8px; }
+  .sky-timeline { margin-top: 6px; padding-top: 6px; padding-bottom: 4px; }
+  .sky-meta { margin-top: 7px; padding-top: 7px; }
+  .side-column { max-height: 100%; }
+  .footer { margin-top: 0; }
+}
+
+/* v0.31 · 页面级地点与时间控件并入顶栏 */
+.topbar { position: relative; z-index: 20; }
+.topbar-controls { display: flex; min-width: 0; align-items: center; gap: 8px; margin-left: auto; }
+.location-control { position: relative; min-width: 0; }
+.location-trigger {
+  display: flex;
+  min-width: 0;
+  max-width: 210px;
+  height: 32px;
+  align-items: center;
+  gap: 7px;
+  padding: 0 9px;
+  border: 1px solid #2b323b;
+  border-radius: 7px;
+  background: #151a20;
+  color: #cbd3de;
+  cursor: pointer;
+}
+.location-trigger:hover, .location-trigger[aria-expanded="true"] { border-color: #465164; background: #1b2128; }
+.location-trigger .pin-icon { flex: none; color: #8daee7; font-size: 13px; }
+.location-trigger .location-name { min-width: 0; overflow: hidden; color: #cbd3de; font-size: 10px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.control-chevron { flex: none; color: #6f7986; font-size: 10px; transition: transform .15s ease; }
+.location-trigger[aria-expanded="true"] .control-chevron { transform: rotate(180deg); }
+.topbar-controls .time-row { margin: 0; padding: 0; border: 0; gap: 6px; }
+.topbar-controls .time-field { height: 32px; gap: 6px; padding: 0 8px; border: 1px solid #2b323b; border-radius: 7px; background: #151a20; }
+.topbar-controls .time-field input { width: 124px; color: #cbd3de; font-size: 10px; }
+.topbar-controls .time-icon { color: #8290a2; font-size: 13px; }
+.topbar-controls .now-button { height: 32px; padding: 0 9px; font-size: 10px; white-space: nowrap; }
+.location-popover {
+  position: fixed;
+  top: 60px;
+  right: max(32px, env(safe-area-inset-right));
+  left: auto;
+  z-index: 60;
+  width: min(620px, calc(100vw - 24px));
+  max-height: calc(100vh - 72px);
+  max-height: calc(100dvh - 72px);
+  margin: 0;
+  padding: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid #303842;
+  border-radius: 10px;
+  background: #11161c;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, .42);
+}
+.location-popover .location-method-row { margin-bottom: 9px; }
+
+@media (min-width: 901px) {
+  .topbar { gap: 18px; }
+  .topbar-right { margin-left: 0; }
+  main { grid-template-rows: minmax(0, 1fr) auto; }
+}
+
+@media (min-width: 901px) and (max-width: 1150px) {
+  .page-nav { gap: 13px; }
+  .topbar-right { font-size: 0; }
+  .topbar-controls .time-field input { width: 120px; }
+}
+
+@media (max-width: 900px) {
+  .topbar { height: auto; min-height: 52px; flex-wrap: wrap; column-gap: 18px; }
+  .brand { order: 1; }
+  .page-nav { order: 2; }
+  .topbar-right { order: 3; margin-left: auto; }
+  .topbar-controls {
+    order: 4;
+    width: 100%;
+    margin: 0;
+    padding: 8px 0;
+    border-top: 1px solid #20252c;
+  }
+  .location-control { flex: 1 1 0; }
+  .location-trigger { width: 100%; max-width: none; }
+  .location-popover {
+    top: 108px;
+    right: max(20px, env(safe-area-inset-right));
+    left: max(20px, env(safe-area-inset-left));
+    width: auto;
+    max-height: calc(100vh - 120px);
+    max-height: calc(100dvh - 120px);
+  }
+}
+
+@media (max-width: 520px) {
+  .topbar { column-gap: 12px; }
+  .topbar-controls { align-items: stretch; flex-direction: column; }
+  .topbar-controls .time-row { width: 100%; }
+  .topbar-controls .time-field { min-width: 0; flex: 1; }
+  .topbar-controls .time-field input { width: 100%; }
+  .location-popover { width: calc(100vw - 24px); }
+}
+
+.cached-sky-notice {
+  position: absolute;
+  top: 54px;
+  right: 12px;
+  left: 12px;
+  z-index: 12;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid #705633;
+  border-radius: 8px;
+  background: rgba(31, 24, 15, .94);
+  color: #efd1a3;
+  font-size: 12px;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+/* v0.35 · 星空视图铺满卡片，页面控件悬浮在高斯模糊层上 */
+.sky-panel {
+  display: block;
+  padding: 0;
+  background: #0b0f13;
+}
+.sky-panel .canvas-wrap {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  filter: none;
+}
+.sky-panel .loading-overlay { border-radius: inherit; }
+.sky-panel .sky-toolbar-only {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 6;
+  display: flex;
+  width: auto;
+  height: auto;
+  flex: none;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid rgba(94, 108, 126, .34);
+  border-radius: 10px;
+  background: rgba(13, 17, 22, .58);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+  backdrop-filter: blur(14px) saturate(125%);
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
+}
+.sky-panel .sky-toolbar-only .sky-tool-section,
+.sky-panel .sky-toolbar-only .tool-group { width: auto; }
+.sky-panel .sky-toolbar-only .tool-button,
+.sky-panel .sky-toolbar-only .segmented { background: rgba(21, 26, 32, .64); }
+.sky-bottom-overlays {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 6;
+  display: grid;
+  gap: 8px;
+  pointer-events: none;
+}
+.sky-bottom-overlays .sky-timeline,
+.sky-bottom-overlays .sky-meta { pointer-events: auto; }
+.sky-bottom-overlays .sky-timeline {
+  margin: 0;
+  padding: 7px 10px 5px;
+  border: 1px solid rgba(77, 90, 106, .38);
+  border-radius: 9px;
+  background: rgba(10, 14, 18, .56);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+.sky-bottom-overlays .sky-meta {
+  margin: 0;
+  padding: 6px;
+  border: 1px solid rgba(77, 90, 106, .34);
+  border-radius: 9px;
+  background: rgba(10, 14, 18, .54);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+.sky-bottom-overlays .moon-status,
+.sky-bottom-overlays .meta-sun { background: rgba(21, 26, 32, .66); }
+.sky-panel.expanded { z-index: 200; display: block; padding: 0; }
+.sky-panel.expanded .sky-toolbar-only {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 100;
+  display: flex !important;
+  visibility: visible;
+  opacity: 1;
+}
+.sky-panel.expanded .canvas-wrap {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  border-radius: 0;
+}
+
+@media (min-width: 901px) {
+  .sky-panel .canvas-wrap { height: 100%; aspect-ratio: auto; }
+}
+
+@media (max-width: 900px) {
+  .sky-panel:not(.expanded) .canvas-wrap {
+    height: clamp(500px, 74svh, 680px);
+    min-height: 500px;
+    aspect-ratio: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .sky-panel .sky-toolbar-only { top: 9px; right: 9px; }
+  .sky-bottom-overlays { right: 9px; bottom: 9px; left: 9px; gap: 6px; }
+  .sky-bottom-overlays .sky-timeline { padding-right: 8px; padding-left: 8px; }
+  .sky-bottom-overlays .sky-meta { gap: 6px; padding: 5px; }
+}
+
+/* v0.44 · 一个默认空间站标记，其余卫星按需开启。 */
+.satellite-menu-button { position: relative; }
+.satellite-menu-button.has-satellites::after { content: ''; position: absolute; right: 3px; top: 3px; width: 4px; height: 4px; border-radius: 50%; background: #eac58d; }
+.sky-panel .satellite-popover { position: absolute; top: 56px; right: 12px; z-index: 12; width: min(340px, calc(100% - 24px)); max-height: calc(100% - 72px); overflow-y: auto; overscroll-behavior: contain; padding: 14px; border: 1px solid #414854; border-radius: 12px; background: rgba(16, 21, 28, .97); box-shadow: 0 14px 45px #0009; backdrop-filter: blur(18px); }
+.satellite-menu-heading { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+.satellite-menu-note, .satellite-data-note { margin: 9px 0; color: #8d99aa; font-size: 11px; line-height: 1.6; }
+.satellite-data-note { color: #b4a082; }
+.satellite-search { display: block; width: 100%; padding: 9px 10px; border: 1px solid #343d49; border-radius: 8px; color: #d5dfed; background: #0c1118; font-size: 12px; }
+.satellite-choices { margin-top: 7px; max-height: 180px; overflow: auto; overscroll-behavior: contain; }
+.satellite-choice { display: flex; align-items: center; gap: 9px; min-height: 42px; border-bottom: 1px solid #262e39; cursor: pointer; font-size: 12px; }
+.satellite-choice input { flex: none; accent-color: #eac58d; width: 16px; height: 16px; }
+.satellite-choice span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.satellite-choice small { color: #778396; font: 10px var(--mono); }
+.satellite-pass-details { margin-top: 10px; border-top: 1px solid #343d49; padding-top: 10px; }
+.satellite-pass-details summary { padding: 5px 0; cursor: pointer; color: #e3c596; font-size: 12px; }
+.satellite-pass-list { max-height: 235px; overflow: auto; }
+.satellite-pass-row { display: grid; gap: 5px; width: 100%; padding: 10px 4px; text-align: left; border: 0; border-bottom: 1px solid #2a323e; background: transparent; color: #d7e1ee; font-size: 12px; cursor: pointer; }
+.satellite-pass-row:hover { background: #263141; }
+.satellite-pass-row small { color: #8d9bac; font-size: 10px; line-height: 1.6; }
+.satellite-event-list { max-height: 240px; overflow: auto; }
+.sky-panel.expanded .satellite-popover { top: max(56px, calc(env(safe-area-inset-top) + 56px)); }
+@media (max-width: 700px) {
+  .sky-panel .satellite-popover { right: 9px; top: 52px; width: min(340px, calc(100% - 18px)); }
+}
+@media (max-width: 520px) {
+  .app-shell .topbar.page-header { grid-template-rows: 48px 84px; height: 132px; min-height: 132px; }
+  .page-header .topbar-context.star-context { display: grid; grid-template-columns: minmax(0, 1fr); height: 84px; gap: 5px; padding: 6px 0; }
+  .app-shell .page-header .star-context .location-control { width: 100%; }
+  .app-shell .page-header .star-context .time-row { width: 100%; flex: none; }
+  .location-popover {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 96px);
+    right: max(12px, env(safe-area-inset-right));
+    left: max(12px, env(safe-area-inset-left));
+    width: auto;
+    max-height: calc(100vh - 108px - env(safe-area-inset-top));
+    max-height: calc(100dvh - 108px - env(safe-area-inset-top));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-bottom: 12px;
+  }
+  .location-popover .location-method-row {
+    flex-direction: row;
+    align-items: center;
+  }
+  .location-popover .control-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .location-popover .field,
+  .location-popover #applyLocationBtn {
+    width: 100%;
+    min-width: 0;
+  }
+}

@@ -1,0 +1,14 @@
+/data/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+playwright-report/
+test-results/
+*.tar
+*.tar.gz
+*.tar.zst
+*.partial

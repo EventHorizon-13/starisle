@@ -1,0 +1,50 @@
+name: Build or publish Docker image
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag, for example 0.6.0'
+        required: true
+        default: '0.6.0'
+      publish:
+        description: 'Push to Docker Hub (requires explicit publishing decision)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  checks:
+    uses: ./.github/workflows/ci.yml
+  docker:
+    needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate release inputs
+        env:
+          VERSION: ${{ inputs.version }}
+          IMAGE: ${{ vars.DOCKERHUB_IMAGE }}
+          PUBLISH: ${{ inputs.publish }}
+        run: |
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?$ ]] || exit 1
+          if [[ "$PUBLISH" == "true" ]]; then
+            [[ "$IMAGE" =~ ^[a-z0-9_-]+/[a-z0-9._-]+$ ]] || exit 1
+          fi
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        if: inputs.publish
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: ${{ inputs.publish }}
+          tags: |
+            ${{ vars.DOCKERHUB_IMAGE || 'starisle' }}:${{ inputs.version }}
+            ${{ vars.DOCKERHUB_IMAGE || 'starisle' }}:latest
+          build-args: |
+            VERSION=${{ inputs.version }}
+            SOURCE_URL=${{ github.server_url }}/${{ github.repository }}
