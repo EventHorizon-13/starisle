@@ -16,6 +16,17 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
       - run: python scripts/init_data.py --profile basic --data-dir data
+      - name: Prepare search catalogues for alias regression tests
+        run: |
+          python - <<'PYTHON'
+          import json
+          from pathlib import Path
+          from scripts.init_data import download
+          for asset in json.loads(Path('data-manifest.json').read_text())['assets']:
+              if asset.get('catalog_source'):
+                  download(asset, Path('data/downloads'))
+          PYTHON
+          python scripts/build_catalogs.py --athyg data/downloads/athyg_32_reduced_m10.csv.gz --openngc data/downloads/NGC.csv --data-dir data --static-dir data
       - run: python -m unittest discover -s tests -p 'test_*.py'
         env:
           DATA_DIR: ./data

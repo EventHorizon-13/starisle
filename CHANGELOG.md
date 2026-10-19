@@ -2,6 +2,8 @@
 
 ## Unreleased — 2026-10-19
 
+- Prepare checksum-pinned search catalogues in CI so Chinese alias regression tests run against their required data.
+
 - Explain deployment and observing focus with sourced comparisons to related projects in both READMEs.
 
 - Sync approved glass star-trail artwork across page headers, favicon and PWA icons.

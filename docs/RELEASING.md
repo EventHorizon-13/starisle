@@ -6,7 +6,7 @@
 
 1. GitHub 仓库短名定为 `starisle`，Docker Hub 镜像短名定为 `starisle`；发布前确定账号命名空间，检查 README、版本、许可证与 THIRD_PARTY_NOTICES。
 2. 在独立安装目录完成 basic/full 初始化，运行测试并检查页面。
-3. `.github/workflows/ci.yml` 执行单元测试和 amd64/arm64 构建，不上传镜像。需要联网下载基础数据；网络失败不代表天文算法回归。
+3. `.github/workflows/ci.yml` 执行单元测试和 amd64/arm64 构建，不上传镜像。需要联网下载基础星历、Hipparcos及校验固定的AT-HYG/OpenNGC目录源，并生成中文别名测试所需索引；不下载数GiB的额外自然卫星星历。网络失败不代表天文算法回归。
 4. `.github/workflows/docker.yml` 仅通过手动 workflow_dispatch 运行，默认 `publish=false`。准备阶段不要执行发布。
 
 ## 账号配置与手动发布
