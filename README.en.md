@@ -2,7 +2,7 @@
 
 A mobile-friendly, self-hosted sky chart with a Chinese interface, powered by Skyfield and JPL ephemerides. Includes a sky map, catalogue search, Solar System, Moon calendar, artificial-satellite tracks and visible passes.
 
-[中文文档](README.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+[Repository](https://github.com/EventHorizon-13/starisle) · [中文文档](README.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
 
 ## Why StarIsle
 
@@ -31,6 +31,8 @@ These distinctions describe official project positioning and this candidate's fe
 Requires Docker and Docker Compose. From this project's directory:
 
 ```sh
+git clone https://github.com/EventHorizon-13/starisle.git
+cd starisle
 cp .env.example .env
 docker compose build
 docker compose run --rm --no-deps starisle python scripts/init_data.py --profile basic
@@ -49,7 +51,7 @@ docker compose up -d
 
 Basic data downloads are approximately 165 MiB. Full astronomy files total roughly 3 GiB; allow at least 5 GiB for source caches and catalogue construction. Downloads are size/SHA256 pinned and published atomically. Stop your instance before replacing catalogue files. See [data details](docs/DATA.md).
 
-Once a public image has been published, set `STARISLE_IMAGE` to its actual Docker Hub name and version, omit the build step, and use `docker compose up -d --no-build`. No public image name is claimed in this prepared release.
+Once a public image has been published, set `STARISLE_IMAGE` to its actual Docker Hub name and version, omit the build step, and use `docker compose up -d --no-build`. No public image name is claimed in this source release.
 
 ## Offline operation and privacy
 

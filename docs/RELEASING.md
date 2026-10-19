@@ -1,6 +1,6 @@
-# GitHub / Docker Hub 发布准备
+# GitHub / Docker Hub 发布维护
 
-本目录是发布候选源代码，未创建远端仓库、推送镜像或设置账号凭据。
+源码已于2026-10-19公开至 [EventHorizon-13/starisle](https://github.com/EventHorizon-13/starisle)。Docker Hub 镜像尚未发布，镜像命名空间与凭据仍需单独配置。
 
 ## 发布前
 
@@ -23,4 +23,4 @@ GitHub Repository variable `DOCKERHUB_IMAGE` 设为实际 `用户名/仓库`。S
 
 ## 验证记录
 
-准备阶段的实机验证在 ARM64 主机进行；amd64/arm64 双平台构建由 CI 配置覆盖，未运行远端 CI 前不把 amd64 标为已实机验证。正式发布前还需指定仓库与镜像名，并完成相应工作流构建。
+准备阶段的实机验证在 ARM64 主机进行；amd64/arm64 双平台构建由 CI 配置覆盖，未运行远端 CI 前不把 amd64 标为已实机验证。GitHub 仓库已指定；后续镜像发布前仍需指定镜像名并确认相应工作流结果。

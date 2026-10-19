@@ -4,7 +4,7 @@
 
 面向家庭观星与科普的中文自托管天文应用，把星图、太阳系、月相和空间站过境预报放进同一个手机友好的网页。浏览器选择地点与时间，服务端使用 Skyfield、JPL 星历和星表计算天空。
 
-[English](README.en.md) · [数据来源与许可](THIRD_PARTY_NOTICES.md) · [发布说明](docs/RELEASING.md)
+[项目仓库](https://github.com/EventHorizon-13/starisle) · [English](README.en.md) · [数据来源与许可](THIRD_PARTY_NOTICES.md) · [发布说明](docs/RELEASING.md)
 
 - 星图：亮星、10 等深星层、梅西耶与 NGC/IC、中文名称和目录编号搜索。
 - 太阳系：行星、冥王星及主要自然卫星，支持时间轴和轨道展示。
@@ -41,6 +41,8 @@ StarIsle 面向想在自家服务器、NAS 或局域网部署中文观星工具�
 需要 Docker Engine 与 Compose 插件。先下载/克隆本项目，进入目录：
 
 ```sh
+git clone https://github.com/EventHorizon-13/starisle.git
+cd starisle
 cp .env.example .env
 docker compose build
 # 基础星历与亮星表：约 165 MiB，需联网首次下载。
