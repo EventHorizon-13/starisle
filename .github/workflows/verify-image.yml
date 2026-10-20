@@ -1,0 +1,64 @@
+name: Verify public GHCR image
+on:
+  workflow_run:
+    workflows: ['Build or publish GHCR image']
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  anonymous-pull:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check anonymous manifests, architectures and image labels
+        env:
+          EXPECTED_REVISION: ${{ github.event.workflow_run.head_sha || '' }}
+        run: |
+          python - <<'PYTHON'
+          import json, os, sys
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError
+          repo = 'eventhorizon-13/starisle'
+          base = 'https://ghcr.io/v2/' + repo
+          try:
+              with urlopen('https://ghcr.io/token?service=ghcr.io&scope=repository:' + repo + ':pull', timeout=30) as response:
+                  token = json.load(response)['token']
+              def get(path):
+                  request = Request(base + path, headers={
+                      'Authorization': 'Bearer ' + token,
+                      'Accept': 'application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json',
+                  })
+                  with urlopen(request, timeout=30) as response:
+                      return json.load(response), response.headers.get('Docker-Content-Digest')
+              version, digest = get('/manifests/0.6.0')
+              latest, latest_digest = get('/manifests/latest')
+              assert digest and digest == latest_digest, 'Version and latest tags differ'
+              images = [m for m in version['manifests'] if m.get('platform', {}).get('os') == 'linux']
+              assert sorted(m['platform']['architecture'] for m in images) == ['amd64', 'arm64']
+              result = {'image': 'ghcr.io/' + repo, 'tags': ['0.6.0', 'latest'], 'digest': digest, 'anonymous': True, 'platforms': []}
+              for image in images:
+                  manifest, child_digest = get('/manifests/' + image['digest'])
+                  config, unused = get('/blobs/' + manifest['config']['digest'])
+                  labels = config['config'].get('Labels', {})
+                  assert labels['org.opencontainers.image.source'] == 'https://github.com/EventHorizon-13/starisle'
+                  assert labels['org.opencontainers.image.version'] == '0.6.0'
+                  expected = os.getenv('EXPECTED_REVISION')
+                  if expected:
+                      assert labels['org.opencontainers.image.revision'] == expected
+                  result['platforms'].append({
+                      'architecture': image['platform']['architecture'],
+                      'manifest_digest': image['digest'],
+                      'compressed_layer_bytes': sum(layer['size'] for layer in manifest['layers']),
+                      'source_revision': labels['org.opencontainers.image.revision'],
+                  })
+              print(json.dumps(result, indent=2))
+              with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+                  summary.write('## Anonymous image verification passed\n\n```json\n' + json.dumps(result, indent=2) + '\n```\n')
+          except HTTPError as error:
+              print('Anonymous GHCR verification failed: HTTP', error.code)
+              print('If this is the first publication, set package visibility to Public in Package settings, then rerun this workflow.')
+              sys.exit(1)
+          PYTHON
