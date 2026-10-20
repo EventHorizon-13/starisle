@@ -9,9 +9,11 @@
 - 发布先等待完整CI成功，随后在GitHub托管runner构建并上传linux/amd64、linux/arm64，写入版本与latest标签，校验远端manifest并在运行摘要记录digest。
 - workflow使用最小的contents:read、发布job专用packages:write和临时GITHUB_TOKEN登录ghcr.io；无需新增账号、Secrets或自托管runner。main以外不执行发布job。
 
-## 首次公开与验证
+## 公开与验证
 
-GHCR首次创建包默认Private，即使源码仓库公开也要单独确认。发布后打开[包页面](https://github.com/EventHorizon-13/starisle/pkgs/container/starisle)的Package settings → Change visibility → Public。没有公开前，不能把匿名拉取描述为已通过。
+2026-10-20发布运行39357461528与匿名验收39358109773均通过。0.6.0/latest摘要一致：`sha256:2843f54016bdef8f46756d3e5bc555140eb557aeac67961f1eceb4235385d5ff`。amd64/arm64压缩图层合计分别100578461/101085154字节，均标记源码提交`fdaaf21ef124519e928a60dfe22de4f05e5297ee`。
+
+新建GHCR包时仍应单独确认可见性；本项目当前已通过匿名验收。发布后打开[包页面](https://github.com/EventHorizon-13/starisle/pkgs/container/starisle)的Package settings → Change visibility → Public。没有公开前，不能把匿名拉取描述为已通过。
 
 匿名安装检查：`docker manifest inspect ghcr.io/eventhorizon-13/starisle:0.6.0`；应包含amd64和arm64。无需下载图层即可检查manifest。镜像标签可变，生产部署可用发布摘要中的`ghcr.io/eventhorizon-13/starisle@sha256:...`固定内容。
 

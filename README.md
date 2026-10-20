@@ -68,7 +68,7 @@ docker compose up -d --no-build
 
 ### 使用预构建镜像
 
-镜像地址为 `ghcr.io/eventhorizon-13/starisle:0.6.0`（另提供 `latest`），支持 `linux/amd64` 和 `linux/arm64`。镜像在 GitHub Actions 构建并上传，无需 Docker Hub 账号。首次发布需将 GHCR 包可见性设为 Public，才可匿名拉取；以[包页面](https://github.com/EventHorizon-13/starisle/pkgs/container/starisle)和[发布工作流](https://github.com/EventHorizon-13/starisle/actions/workflows/docker.yml)的实际结果为准。
+镜像地址为 `ghcr.io/eventhorizon-13/starisle:0.6.0`（另提供 `latest`），支持 `linux/amd64` 和 `linux/arm64`。镜像在 GitHub Actions 构建并上传，无需 Docker Hub 账号。镜像已公开，可匿名拉取，无需登录。2026-10-20[发布构建](https://github.com/EventHorizon-13/starisle/actions/runs/39357461528)与[匿名验收](https://github.com/EventHorizon-13/starisle/actions/runs/39358109773)通过；包和版本见[镜像页面](https://github.com/EventHorizon-13/starisle/pkgs/container/starisle)。
 
 安装步骤默认拉取预构建镜像。若自行构建，先在 `.env` 设 `STARISLE_IMAGE=starisle:local`，再运行 `docker compose build`；随后沿用数据初始化及启动步骤。完整天文数据独立存储在 `data/`，不随镜像发布。
 

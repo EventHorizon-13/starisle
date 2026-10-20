@@ -51,7 +51,7 @@ docker compose up -d --no-build
 
 Basic data downloads are approximately 165 MiB. Full astronomy files total roughly 3 GiB; allow at least 5 GiB for source caches and catalogue construction. Downloads are size/SHA256 pinned and published atomically. Stop your instance before replacing catalogue files. See [data details](docs/DATA.md).
 
-The image address is `ghcr.io/eventhorizon-13/starisle:0.6.0` (also tagged `latest`), targeting `linux/amd64` and `linux/arm64`. Builds and uploads run on GitHub Actions; no Docker Hub account is required. GHCR packages default to private on first publication: the owner must set package visibility to Public before anonymous pulls work. Check the [package](https://github.com/EventHorizon-13/starisle/pkgs/container/starisle) and [publishing workflow](https://github.com/EventHorizon-13/starisle/actions/workflows/docker.yml) for current availability.
+The image address is `ghcr.io/eventhorizon-13/starisle:0.6.0` (also tagged `latest`), targeting `linux/amd64` and `linux/arm64`. Builds and uploads run on GitHub Actions; no Docker Hub account is required. The image is public and can be pulled without logging in. Both the [publishing build](https://github.com/EventHorizon-13/starisle/actions/runs/39357461528) and [anonymous verification](https://github.com/EventHorizon-13/starisle/actions/runs/39358109773) passed on 2026-10-20. See the [package](https://github.com/EventHorizon-13/starisle/pkgs/container/starisle) for versions.
 
 The quick start uses the prebuilt image. For a local build, set `STARISLE_IMAGE=starisle:local` in `.env`, run `docker compose build`, then use the same data initialization and startup commands. Full astronomy data live in `data/` and are not bundled in the image.
 
