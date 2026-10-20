@@ -1,6 +1,6 @@
 services:
   starisle:
-    image: ${STARISLE_IMAGE:-starisle:0.6.0}
+    image: ${STARISLE_IMAGE:-ghcr.io/eventhorizon-13/starisle:0.6.0}
     build:
       context: .
       args:

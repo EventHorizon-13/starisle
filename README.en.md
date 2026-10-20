@@ -34,9 +34,9 @@ Requires Docker and Docker Compose. From this project's directory:
 git clone https://github.com/EventHorizon-13/starisle.git
 cd starisle
 cp .env.example .env
-docker compose build
-docker compose run --rm --no-deps starisle python scripts/init_data.py --profile basic
-docker compose up -d
+docker compose pull starisle
+docker compose run --rm --no-deps --no-build starisle python scripts/init_data.py --profile basic
+docker compose up -d --no-build
 ```
 
 Open `http://localhost:18080`. The default binding is loopback. Set `BIND_ADDRESS=0.0.0.0` in `.env` for LAN access. Browser geolocation requires HTTPS; coordinates can also be entered manually.
@@ -45,13 +45,15 @@ For full magnitude-10 stars, indexed catalogue search and natural-satellite ephe
 
 ```sh
 docker compose stop starisle
-docker compose run --rm --no-deps starisle python scripts/init_data.py --profile full
-docker compose up -d
+docker compose run --rm --no-deps --no-build starisle python scripts/init_data.py --profile full
+docker compose up -d --no-build
 ```
 
 Basic data downloads are approximately 165 MiB. Full astronomy files total roughly 3 GiB; allow at least 5 GiB for source caches and catalogue construction. Downloads are size/SHA256 pinned and published atomically. Stop your instance before replacing catalogue files. See [data details](docs/DATA.md).
 
-Once a public image has been published, set `STARISLE_IMAGE` to its actual Docker Hub name and version, omit the build step, and use `docker compose up -d --no-build`. No public image name is claimed in this source release.
+The image address is `ghcr.io/eventhorizon-13/starisle:0.6.0` (also tagged `latest`), targeting `linux/amd64` and `linux/arm64`. Builds and uploads run on GitHub Actions; no Docker Hub account is required. GHCR packages default to private on first publication: the owner must set package visibility to Public before anonymous pulls work. Check the [package](https://github.com/EventHorizon-13/starisle/pkgs/container/starisle) and [publishing workflow](https://github.com/EventHorizon-13/starisle/actions/workflows/docker.yml) for current availability.
+
+The quick start uses the prebuilt image. For a local build, set `STARISLE_IMAGE=starisle:local` in `.env`, run `docker compose build`, then use the same data initialization and startup commands. Full astronomy data live in `data/` and are not bundled in the image.
 
 ## Offline operation and privacy
 

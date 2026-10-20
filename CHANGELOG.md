@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased — 2026-10-19
+## Unreleased — 2026-10-20
+
+- Publish amd64/arm64 images to GHCR using GitHub-hosted Actions and the temporary repository token; document prebuilt-image installation.
 
 - Prepare checksum-pinned search catalogues in CI so Chinese alias regression tests run against their required data.
 

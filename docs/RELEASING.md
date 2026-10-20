@@ -1,26 +1,22 @@
-# GitHub / Docker Hub 发布维护
+# GitHub / GHCR 发布维护
 
-源码已于2026-10-19公开至 [EventHorizon-13/starisle](https://github.com/EventHorizon-13/starisle)。Docker Hub 镜像尚未发布，镜像命名空间与凭据仍需单独配置。
+源码：[EventHorizon-13/starisle](https://github.com/EventHorizon-13/starisle)。镜像：`ghcr.io/eventhorizon-13/starisle`；不需要Docker Hub账号或长期访问令牌。
 
-## 发布前
+## 构建与发布
 
-1. GitHub 仓库短名定为 `starisle`，Docker Hub 镜像短名定为 `starisle`；发布前确定账号命名空间，检查 README、版本、许可证与 THIRD_PARTY_NOTICES。
-2. 在独立安装目录完成 basic/full 初始化，运行测试并检查页面。
-3. `.github/workflows/ci.yml` 执行单元测试和 amd64/arm64 构建，不上传镜像。需要联网下载基础星历、Hipparcos及校验固定的AT-HYG/OpenNGC目录源，并生成中文别名测试所需索引；不下载数GiB的额外自然卫星星历。网络失败不代表天文算法回归。
-4. `.github/workflows/docker.yml` 仅通过手动 workflow_dispatch 运行，默认 `publish=false`。准备阶段不要执行发布。
+- `.github/workflows/ci.yml` 运行测试与amd64/arm64构建，不上传镜像。它下载校验固定的基础星历和AT-HYG/OpenNGC源并生成测试目录，不下载额外自然卫星星历。
+- `.github/workflows/docker.yml` 仅在main修改该工作流时自动发布（默认版本0.6.0），或通过手动Run workflow运行。手动运行默认publish=false，仅验证构建；明确发布时设置publish=true与版本号。普通源码/文档提交和PR不自动发布镜像。
+- 发布先等待完整CI成功，随后在GitHub托管runner构建并上传linux/amd64、linux/arm64，写入版本与latest标签，校验远端manifest并在运行摘要记录digest。
+- workflow使用最小的contents:read、发布job专用packages:write和临时GITHUB_TOKEN登录ghcr.io；无需新增账号、Secrets或自托管runner。main以外不执行发布job。
 
-## 账号配置与手动发布
+## 首次公开与验证
 
-GitHub Repository variable `DOCKERHUB_IMAGE` 设为实际 `用户名/仓库`。Secrets：`DOCKERHUB_USERNAME` 与具有相应仓库写权限的 `DOCKERHUB_TOKEN`。token 只放 GitHub Secrets，不写入文件。
+GHCR首次创建包默认Private，即使源码仓库公开也要单独确认。发布后打开[包页面](https://github.com/EventHorizon-13/starisle/pkgs/container/starisle)的Package settings → Change visibility → Public。没有公开前，不能把匿名拉取描述为已通过。
 
-明确决定发布后，手动运行 Docker workflow，填写版本并设置 publish=true。构建标签 `版本` 与 `latest`，目标平台 linux/amd64、linux/arm64；不在普通提交或 pull request 时推镜像。修改版本时同步应用版本、Dockerfile 默认值、Compose/.env 示例及 CHANGELOG。
+匿名安装检查：`docker manifest inspect ghcr.io/eventhorizon-13/starisle:0.6.0`；应包含amd64和arm64。无需下载图层即可检查manifest。镜像标签可变，生产部署可用发布摘要中的`ghcr.io/eventhorizon-13/starisle@sha256:...`固定内容。
 
-建议先打版本 tag，再从该 tag 手动运行工作流。保留固定版本标签，README 使用版本标签示例。
+修改版本时同步应用版本、Dockerfile默认值、Compose/.env、README与CHANGELOG。正式版本标签应保留，不覆盖不同源码内容。
 
-## 恢复与生产部署
+## 生产部署
 
-发布版与生产部署分开测试。不要从发布候选目录直接重建或覆盖正在运行的服务。升级生产前另做数据库和数据备份，确认差异后再安排切换。
-
-## 验证记录
-
-准备阶段的实机验证在 ARM64 主机进行；amd64/arm64 双平台构建由 CI 配置覆盖，未运行远端 CI 前不把 amd64 标为已实机验证。GitHub 仓库已指定；后续镜像发布前仍需指定镜像名并确认相应工作流结果。
+镜像发布不等于更新现有生产站点。升级生产需另做数据备份、确认差异及安排切换，不直接用发布目录覆盖运行中的服务。完整天文数据由使用者初始化，不打进镜像。

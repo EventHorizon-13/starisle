@@ -44,10 +44,10 @@ StarIsle 面向想在自家服务器、NAS 或局域网部署中文观星工具�
 git clone https://github.com/EventHorizon-13/starisle.git
 cd starisle
 cp .env.example .env
-docker compose build
+docker compose pull starisle
 # 基础星历与亮星表：约 165 MiB，需联网首次下载。
-docker compose run --rm --no-deps starisle python scripts/init_data.py --profile basic
-docker compose up -d
+docker compose run --rm --no-deps --no-build starisle python scripts/init_data.py --profile basic
+docker compose up -d --no-build
 ```
 
 打开 `http://localhost:18080`。默认只绑定本机回环地址；需要 LAN 访问时，将 `.env` 中 `BIND_ADDRESS` 改为 `0.0.0.0`，用服务器地址访问。浏览器自动定位需要 HTTPS，HTTP 下可以手填经纬度。
@@ -60,15 +60,17 @@ docker compose up -d
 
 ```sh
 docker compose stop starisle
-docker compose run --rm --no-deps starisle python scripts/init_data.py --profile full
-docker compose up -d
+docker compose run --rm --no-deps --no-build starisle python scripts/init_data.py --profile full
+docker compose up -d --no-build
 ```
 
 完整配置需要约 3 GiB 星历与星表；目录生成和下载缓存还需要额外空间，建议至少 5 GiB 可用。已有校验匹配的下载会复用。下载与 SHA256 检查成功后才写正式文件；目录构建失败会保留已有目录。上游文件发生变化会拒绝导入，详见 [数据说明](docs/DATA.md)。
 
 ### 使用预构建镜像
 
-公开镜像仓库尚未指定；发布后将 `.env` 的 `STARISLE_IMAGE` 设置为实际的 `用户名/仓库:版本`。预构建安装不需要运行 `build`，其余步骤相同；用 `docker compose up -d --no-build` 启动。
+镜像地址为 `ghcr.io/eventhorizon-13/starisle:0.6.0`（另提供 `latest`），支持 `linux/amd64` 和 `linux/arm64`。镜像在 GitHub Actions 构建并上传，无需 Docker Hub 账号。首次发布需将 GHCR 包可见性设为 Public，才可匿名拉取；以[包页面](https://github.com/EventHorizon-13/starisle/pkgs/container/starisle)和[发布工作流](https://github.com/EventHorizon-13/starisle/actions/workflows/docker.yml)的实际结果为准。
+
+安装步骤默认拉取预构建镜像。若自行构建，先在 `.env` 设 `STARISLE_IMAGE=starisle:local`，再运行 `docker compose build`；随后沿用数据初始化及启动步骤。完整天文数据独立存储在 `data/`，不随镜像发布。
 
 ## 配置
 
@@ -76,7 +78,7 @@ docker compose up -d
 |---|---|---|
 | `PORT` | `18080` | 宿主 HTTP 端口 |
 | `BIND_ADDRESS` | `127.0.0.1` | 监听地址 |
-| `STARISLE_IMAGE` | `starisle:0.6.0` | 本地或远端镜像 |
+| `STARISLE_IMAGE` | `ghcr.io/eventhorizon-13/starisle:0.6.0` | 固定版本镜像，也可改为本地构建标签 |
 | `OFFLINE` | `false` | `true` 禁止应用运行时下载；必须先准备基础数据 |
 | `IERS_UPDATE` | `false` | 联网更新地球定向表；默认使用 Skyfield 随包数据 |
 | `PIP_INDEX_URL` | `https://pypi.org/simple` | 构建时 Python 包源 |
